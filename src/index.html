@@ -1,1 +1,119 @@
-first commit
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>document.getElementsByTagName("html")[0].className += " js";</script>
+
+  <!--풀캘린더 사용을 위한 링크-->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+  <script src="assets\js\calendar.js"></script>
+
+  <!-- css링크 -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/custom.css">
+  <title>웹 일정 관리 프로젝트</title>
+</head> 
+
+<body>
+  <header class="cd-main-header js-cd-main-header">
+    <div class="cd-logo-wrapper">
+      <!-- 로고가 들어갈 자리(이미지) -->
+    </div>
+    
+    <div class="cd-search js-cd-search">
+      <form>
+        <input class="reset" type="search" placeholder="Search...">
+      </form>
+    </div>
+  
+    <button class="reset cd-nav-trigger js-cd-nav-trigger" aria-label="Toggle menu"><span></span></button>
+  
+    <ul class="cd-nav__list js-cd-nav__list">
+      <li class="cd-nav__item cd-nav__item--has-children cd-nav__item--account js-cd-item--has-children">
+        <a href="#0">
+          <img src="assets/img/cd-avatar.svg" alt="avatar">
+          <!-- 디폴트 네임 추후 DB와 연동 -->
+          <span>홍길동</span>
+        </a>
+    
+        <ul class="cd-nav__sub-list">
+          <li class="cd-nav__sub-item"><a href="#0">계정 관리</a></li>
+          <li class="cd-nav__sub-item"><a href="#0">로그아웃</a></li>
+        </ul>
+      </li>
+    </ul>
+  </header> 
+  
+  <main class="cd-main-content">
+    <nav class="cd-side-nav js-cd-side-nav">
+      <ul class="cd-side__list js-cd-side__list">
+        <!-- 프로필 영역 -->
+        <li class="cd-side__item cd-side__profile">
+          <div class="profile-image-container">
+            <label for="profileUpload" class="profile-upload-label">
+              <input type="file" id="profileUpload" style="display: none;">
+              <svg viewBox="0 0 24 24" class="settings-icon" width="16" height="16">
+                <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+              </svg>
+            </label>
+            <div class="profile-image">
+              <img src="assets/img/default-profile.png" id="profileImage">
+            </div>
+          </div>
+          <div class="profile-info">
+            <!-- 디폴트 네임 추후 DB와 연동 -->
+            <h3 class="profile-name">홍길동</h3>
+            <p class="profile-id">#HONG</p>
+            <p class="profile-bio">안녕하세요.</p>
+          </div>
+        </li>
+        <!-- 프로필 영역 -->
+
+        <!-- 이하 버튼 기능 미구현-->
+        <li class="cd-side__item cd-side__item--has-children cd-side__item--notifications cd-side__item--selected js-cd-item--has-children">
+          <a href="#0">알림<span class="cd-count">3</span></a>
+          
+          <ul class="cd-side__sub-list">
+            <li class="cd-side__sub-item"><a aria-current="page" href="#0">알람 1</a></li>
+            <li class="cd-side__sub-item"><a href="#0">알람 2</a></li>
+            <li class="cd-side__sub-item"><a href="#0">알람 3</a></li>
+          </ul>
+        </li>
+    
+        <li class="cd-side__item cd-side__item--has-children cd-side__item--comments js-cd-item--has-children">
+          <a href="#0">일기</a>
+          <ul class="cd-side__sub-list">
+            <li class="cd-side__sub-item"><a href="#0">일기  1</a></li>
+            <li class="cd-side__sub-item"><a href="#0">일기  2</a></li>
+            <li class="cd-side__sub-item"><a href="#0">일기  3</a></li>
+          </ul>
+        </li> 
+        
+        <li class="cd-side__item cd-side__item--has-children cd-side__item--comments js-cd-item--has-children">
+          <a href="#0">캘린더</a>
+          <ul class="cd-side__sub-list">
+            <li class="cd-side__sub-item"><a href="#0">캘린더 1</a></li>
+            <li class="cd-side__sub-item"><a href="#0">캘린더 2</a></li>
+            <li class="cd-side__sub-item"><a href="#0">캘린더 3</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  
+    <div class="cd-content-wrapper">
+      
+      <div class="calendar-container">
+        <div id="calendar"></div>
+      </div>
+     
+    </div> 
+  </main> 
+
+  <!-- 반응형 사이드바 구성을 위한 js 링크 -->
+  <script src="assets/js/util.js"></script>
+  <script src="assets/js/menu-aim.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
