@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko"> 
+<head>
+<meta charset="UTF-8">
+<title>PBL 로그인</title> 
+
+<body>
+
+   <div id="wrap" class="wrapper">
+      <form method ="post" name="join" id="join">
+
+
+         <div id="container">
+            <div class="row_group">
+               <div class="userInput">
+        
+        <!-- 아이디 입력 -->
+                  <h3 class="list">아이디<span id="idError"></span></h3>
+                  <span class="box int_id" ><input type="text" id="id" class="int check"
+                     maxlength="20"></span>
+               </div>
+               <div class="userInput">
+        <!-- 비밀번호 입력 -->
+                  <h3 class="list">비밀번호<span id="pwError"></span></h3>
+                  <span class="box int_id"><input type="password" id="pw" class="int check"
+                     maxlength="20"></span>
+               </div>
+
+             <div class="btn_area">
+                <input type="submit" value="로그인" id="btnJoin" class="btn_type btn_primary">
+             </div>
+          </div>
+       </div>
+    </form>
+ </div>
+</body>
+</html>
