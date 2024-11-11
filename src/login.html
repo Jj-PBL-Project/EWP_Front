@@ -3,35 +3,118 @@
 <head>
 <meta charset="UTF-8">
 <title>PBL 로그인</title> 
+<style>
+/* 로그인 화면 */
+body {
+   margin: 0;
+   padding: 0;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   height: 100vh;
+   background: #7AB8FF;
+   font-family: 'Inter', sans-serif;
+}
 
+.wrapper {
+   position: relative;
+   width: 460px;
+   height: 600;
+   background: #FFFFFF;
+   border: 1px solid #B9B9B9;
+   border-radius: 30px;
+   filter: drop-shadow(5px 5px 4px rgba(0, 0, 0, 0.25));
+   padding: 20px;
+   text-align: center;
+}
+
+.userInput {
+   display: flex;
+   flex-direction: column;
+   margin-bottom: 20px;
+}
+
+h3 {
+   font-weight: 700;
+   font-size: 20px;
+   color: #7BA1FF;
+   margin: 0 0 10px;
+   text-align: left;
+}
+
+input[type="text"], input[type="password"] {
+   width: 100%;
+   height: 48px;
+   padding: 16px;
+   border: 2px solid #7BA1FF;
+   border-radius: 12px;
+   font-size: 20px;
+   color: #939393;
+   box-sizing: border-box;
+}
+
+.btn_area {
+   display: flex;
+   justify-content: center;
+   margin-top: 0px;
+}
+
+.btn_type {
+   width: 370px;
+   height: 50px;
+   background: #7BA1FF;
+   color: #FFFFFF;
+   ;
+   border: none;
+   border-radius: 15px;
+   font-weight: 700;
+   font-size: 20px;
+   cursor: pointer;
+}
+
+.signup_text {
+   text-align: center;
+   font-size: 15px;
+   color: #939393;
+   margin-top: 15px;
+}
+/*아이콘 추가 해야 함*/
+</style>
+</head> 
 <body>
-
    <div id="wrap" class="wrapper">
-      <form method ="post" name="join" id="join">
-
-
+      <form method="post" name="join" id="join">
          <div id="container">
+            <svg width="120" height="115" viewBox="0 0 120 115" fill="none" xmlns="http://www.w3.org/2000/svg">
+               <path d="M5 51.5122H115V100C115 105.523 110.523 110 105 110H15C9.47715 110 5 105.523 5 100V51.5122Z" fill="white" stroke="#B9B9B9" stroke-width="10"/>
+               <path d="M5 23.4634C5 17.9406 9.47716 13.4634 15 13.4634H105C110.523 13.4634 115 17.9406 115 23.4634V38H5V23.4634Z" fill="#7BA1FF" stroke="#5A7FDE" stroke-width="10"/>
+               <rect x="14" width="14" height="25.7561" rx="5" fill="#3E3E3E"/>
+               <rect x="39.9092" width="14" height="25.7561" rx="5" fill="#3E3E3E"/>
+               <rect x="65.8184" width="14" height="25.7561" rx="5" fill="#3E3E3E"/>
+               <rect x="91.7273" width="14" height="25.7561" rx="5" fill="#3E3E3E"/>
+               </svg>
             <div class="row_group">
                <div class="userInput">
-        
-        <!-- 아이디 입력 -->
+                  <!-- 아이디 입력 -->
                   <h3 class="list">아이디<span id="idError"></span></h3>
-                  <span class="box int_id" ><input type="text" id="id" class="int check"
-                     maxlength="20"></span>
+                  <span class="box int_id">
+                     <input type="text" id="id" class="int check" maxlength="20" placeholder="아이디를 입력하세요">
+                  </span>
                </div>
                <div class="userInput">
-        <!-- 비밀번호 입력 -->
+                  <!-- 비밀번호 입력 -->
                   <h3 class="list">비밀번호<span id="pwError"></span></h3>
-                  <span class="box int_id"><input type="password" id="pw" class="int check"
-                     maxlength="20"></span>
+                  <span class="box int_id">
+                     <input type="password" id="pw" class="int check" maxlength="20" placeholder="비밀번호를 입력하세요">
+                  </span>
                </div>
-
-             <div class="btn_area">
-                <input type="submit" value="로그인" id="btnJoin" class="btn_type btn_primary">
-             </div>
-          </div>
-       </div>
-    </form>
- </div>
+               <div class="btn_area">
+                  <input type="submit" value="로그인" id="btnJoin" class="btn_type btn_primary">
+               </div><!-- 링크 추가 -->
+               <p class="signup_text">계정이 없으신가요?<a href="#"> 회원가입은 여기</a></p>
+            </div>
+         </div>
+      </form>
+   </div>
 </body>
 </html>
