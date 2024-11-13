@@ -1,0 +1,142 @@
+/* ***풀 캘린더 커스텀 부분 시작*** */
+
+/* 캘린더 컨테이너 영역 */
+.calendar-container {
+    height: calc(100vh - 120px);
+    /* 뷰포트 높이에서 헤더/패딩 공간 제외 */
+    margin-top: -3.125rem;
+    margin-bottom: -3.125rem;
+    overflow-y: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 날짜 숫자 스타일 초기화(기본값 하이퍼링크 텍스트 형식) */
+.fc-daygrid-day-number {
+    /* 일반 텍스트 같이 보이도록 스타일 초기화 */
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
+.fc-col-header-cell-cushion {
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
+/* 공휴일의 글씨 크기를 60%로 축소 */
+.holiday-event {
+    font-size: 0.6em !important;
+}
+
+/* 캘린더 요일 부분 커스텀 색상 */
+.fc-scrollgrid-sync-inner {
+    background-color: #2C3E50;
+}
+
+.fc-daygrid-day-frame {
+    background-color: #ffffff;
+}
+
+.fc-col-header-cell-cushion {
+    color: #ffffff !important;
+}
+
+/* ***풀 캘린더 커스텀 부분 끝*** */
+
+/* ***프로필 섹션 시작*** */
+
+.cd-side__profile {
+    padding: 20px;
+    text-align: center;
+}
+
+.profile-image-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.profile-image {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    border: 2px solid #e0e0e0;
+    background: transparent;
+    overflow: hidden;
+}
+
+.profile-image::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40%;
+    height: 40%;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23cccccc"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.5;
+}
+
+.profile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: relative;
+    z-index: 1;
+}
+
+.profile-upload-label {
+    position: absolute;
+    top: 0;
+    right: 20px;
+    background: #ffffff;
+    padding: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.settings-icon {
+    fill: #666;
+    transition: transform 0.3s ease;
+}
+
+.profile-upload-label:hover .settings-icon {
+    transform: rotate(45deg);
+}
+
+.profile-info {
+    color: #333;
+}
+
+.profile-name {
+    color: #ffffff;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.profile-id {
+    color: #ffffff;
+    font-size: 0.9em;
+    margin-bottom: 8px;
+}
+
+.profile-bio {
+    font-size: 0.9em;
+    color: #ffffff;
+    line-height: 1.4;
+}
+
+/* ***프로필 섹션 끝*** */
