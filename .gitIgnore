@@ -46,4 +46,8 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+node_modules
+package-lock.json
+package.json
+
 # End of https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode
