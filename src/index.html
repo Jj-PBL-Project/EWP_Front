@@ -17,6 +17,7 @@
 
   <link rel="stylesheet" href="assets/css/main_page/main.css">
 
+  <script src="assets/js/userState.js"></script>
   <title>웹 일정 관리 프로젝트</title>
 </head>
 
@@ -35,26 +36,31 @@
     <button class="reset cd-nav-trigger js-cd-nav-trigger" aria-label="Toggle menu"><span></span></button>
 
     <ul class="cd-nav__list js-cd-nav__list">
-      <li class="cd-nav__item cd-nav__item--has-children cd-nav__item--account js-cd-item--has-children">
+      <li class="cd-nav__item cd-nav__item--has-children cd-nav__item--account js-cd-item--has-children"
+        id="userAccount" style="display: none;">
         <a href="#0">
           <img src="assets/img/cd-avatar.svg" alt="avatar">
-          <!-- 디폴트 네임 추후 DB와 연동 -->
-          <span>홍길동</span>
+          <span id="userName">홍길동</span>
         </a>
 
         <ul class="cd-nav__sub-list">
           <li class="cd-nav__sub-item"><a href="#0">계정 관리</a></li>
           <li class="cd-nav__sub-item"><a href="#0">로그아웃</a></li>
         </ul>
+      <li class="cd-nav__item" id="loginButton" style="display: block;">
+        <a href="#0" class="login-btn">로그인</a>
       </li>
     </ul>
+
+    </li>
+
   </header>
 
   <main class="cd-main-content">
     <nav class="cd-side-nav js-cd-side-nav">
       <ul class="cd-side__list js-cd-side__list">
         <!-- 프로필 영역 -->
-        <li class="cd-side__item cd-side__profile">
+        <li class="cd-side__item cd-side__profile" id="userProfile" style="display: none;">
           <div class="profile-image-container">
             <label for="profileUpload" class="profile-upload-label">
               <input type="file" id="profileUpload" style="display: none;">
@@ -68,10 +74,14 @@
             </div>
           </div>
           <div class="profile-info">
-            <!-- 디폴트 네임 추후 DB와 연동 -->
             <h3 class="profile-name">홍길동</h3>
             <p class="profile-id">#HONG</p>
             <p class="profile-bio">안녕하세요.</p>
+          </div>
+        </li>
+        <li class="cd-side__item cd-side__profile" id="guestProfile" style="display: block;">
+          <div class="guest-profile">
+            <p class="guest-message">로그인이 필요한 서비스입니다</p>
           </div>
         </li>
         <!-- 프로필 영역 -->
@@ -111,9 +121,7 @@
     <div class="cd-content-wrapper">
       <div class="calendar-container">
         <div id="calendar"></div>
-
       </div>
-
     </div>
   </main>
 
@@ -121,6 +129,7 @@
   <script src="assets/js/util.js"></script>
   <script src="assets/js/menu-aim.js"></script>
   <script src="assets/js/main.js"></script>
+  <div id="modalContainer"></div>
 </body>
 
 </html>
