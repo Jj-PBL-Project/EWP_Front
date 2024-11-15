@@ -1,0 +1,201 @@
+<div id="eventModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 style="font-weight: bold;">새 일정 추가</h2>
+            <button type="button" class="close-button">&times;</button> 
+        </div>
+        <div class="modal-body">
+            <form id="eventForm">
+                <div class="form-group">
+                    <label for="eventTitle">제목</label>
+                    <input type="text" id="eventTitle" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="eventLocation">장소</label>
+                    <div class="location-input">
+                        <input type="text" id="eventLocation">
+                        <button type="button" id="mapSearch">지도 검색</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>일시</label>
+                    <div class="form-group">
+                        <label for="eventStart">시작 시간</label>
+                        <input type="datetime-local" id="eventStart" name="eventStart" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventEnd">종료 시간</label>
+                        <input type="datetime-local" id="eventEnd" name="eventEnd" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="eventAttendees">참석자</label>
+                    <input type="text" id="eventAttendees" placeholder="#사용자ID">
+                    <!-- 아래는 참석자 목록을 표시할 div -->
+                    <div id="attendeesList" class="attendees-list"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="eventCalendar">캘린더 선택</label>
+                    <select id="eventCalendar">
+                        <option value="default">내 캘린더</option>
+                        <option value="work">업무</option>
+                        <option value="personal">개인</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="eventDescription">일정 설명</label>
+                    <textarea id="eventDescription" rows="4"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="eventReminder">알림</label>
+                    <select id="eventReminder">
+                        <option value="60">1시간 전</option>
+                        <option value="30">30분 전</option>
+                        <option value="10">10분 전</option>
+                        <option value="0">정시</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="eventColor">이벤트 색상</label>
+                    <select id="eventColor">
+                        <option value="red">빨강</option>
+                        <option value="orange">주황</option>
+                        <option value="yellow">노랑</option>
+                        <option value="blue">파랑</option>
+                        <option value="lightgreen">연두</option>
+                        <option value="purple">보라</option>
+                        <option value="gray">흑회색</option>
+                        <option value="skyblue">하늘색</option>
+                    </select>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-submit">저장</button>
+                    <button type="button" class="btn-cancel">취소</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 이벤트 수정 모달  -->
+<div id="editEventModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>일정 수정</h2>
+            <button type="button" class="close-button">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="editEventForm">
+                <!-- 기존 폼과 동일한 필드들 복사 -->
+                <div class="form-group">
+                    <label for="editEventTitle">제목</label>
+                    <input type="text" id="editEventTitle" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editEventLocation">장소</label>
+                    <div class="location-input">
+                        <input type="text" id="editEventLocation">
+                        <button type="button" id="editMapSearch">지도 검색</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>일시</label>
+                    <div class="form-group">
+                        <label for="editEventStart">시작 시간</label>
+                        <input type="datetime-local" id="editEventStart" name="eventStart" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editEventEnd">종료 시간</label>
+                        <input type="datetime-local" id="editEventEnd" name="eventEnd" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="editEventAttendees">참석자</label>
+                    <input type="text" id="editEventAttendees" placeholder="#사용자ID">
+                    <div id="editAttendeesList" class="attendees-list"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="editEventCalendar">캘린더 선택</label>
+                    <select id="editEventCalendar">
+                        <option value="default">내 캘린더</option>
+                        <option value="work">업무</option>
+                        <option value="personal">개인</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="editEventDescription">일정 설명</label>
+                    <textarea id="editEventDescription" rows="4"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="editEventReminder">알림</label>
+                    <select id="editEventReminder">
+                        <option value="60">1시간 전</option>
+                        <option value="30">30분 전</option>
+                        <option value="10">10분 전</option>
+                        <option value="0">정시</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="editEventColor">이벤트 색상</label>
+                    <select id="editEventColor">
+                        <option value="red">빨강</option>
+                        <option value="orange">주황</option>
+                        <option value="yellow">노랑</option>
+                        <option value="blue">파랑</option>
+                        <option value="lightgreen">연두</option>
+                        <option value="purple">보라</option>
+                        <option value="gray">흑회색</option>
+                        <option value="skyblue">하늘색</option>
+                    </select>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-submit">수정</button>
+                    <button type="button" class="btn-delete">삭제</button>
+                    <button type="button" class="btn-cancel">취소</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 일정 정보 팝업 모달  -->
+<div id="eventInfoModal" class="modal">
+    <div class="modal-content" style="max-width: 300px;">
+        <div class="modal-header" style="display: lnline; justify-content: space-between; align-items: center;">
+            <h4 id="infoEventTitle" class="info-title"></h4>
+            <button type="button" class="close-button" style="margin-left: auto;">&times;</button> <!-- 닫기 버튼 -->
+        </div>
+        <div class="modal-body">
+            <div class="event-info">
+                <div class="info-details">
+                    <p><strong>장소:</strong> <span id="infoEventLocation"></span></p>
+                    <p><strong>일시:</strong> <span id="infoEventDateTime"></span></p>
+                    <p><strong>캘린더:</strong> <span id="infoEventCalendar"></span></p>
+                    <p><strong>참석자:</strong> <span id="infoEventAttendees"></span></p>
+                    <p><strong>설명:</strong> <span id="infoEventDescription"></span></p>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" class="btn-edit">수정</button>
+                <button type="button" class="btn-delete">삭제</button>
+            </div>
+        </div>
+    </div>
+</div>
+
