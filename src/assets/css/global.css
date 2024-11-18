@@ -140,3 +140,36 @@
 }
 
 /* ***프로필 섹션 끝*** */
+
+/* 로그인 버튼 스타일 */
+#loginButton {
+    padding-right: 20px;
+    /* 우측 여백 추가 */
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.login-btn {
+    display: flex;
+    background-color: #7BA1FF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+
+.guest-profile {
+    padding: 20px;
+    text-align: center;
+}
+
+.guest-message {
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.cd-nav__item--account {
+    padding-right: 0px;
+}
