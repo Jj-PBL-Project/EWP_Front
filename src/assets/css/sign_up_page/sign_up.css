@@ -1,96 +1,296 @@
- /* 전체 페이지 설정 */
- body {
-     font-family: 'Inter', sans-serif;
-     display: flex;
-     justify-content: center;
-     align-items: center;
-     height: 100vh;
-     background-color: #7AB8FF;
-     margin: 0;
- }
+/* 전체 페이지 설정 */
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #7AB8FF;
+    font-family: 'Inter', sans-serif;
+}
 
- /* 로그인 프레임 */
- .login-frame {
-     position: relative;
-     width: 720px;
-     height: 800px;
-     background: #FFFFFF;
-     border: 1px solid #B9B9B9;
-     border-radius: 30px;
-     box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.25);
-     padding: 40px;
- }
+/* 로그인 프레임 */
+.login-frame {
+    position: relative;
+    /* 상대 위치 설정 */
+    width: 720px;
+    height: 85vh;
+    /* viewport 높이의 85% */
+    max-height: 800px;
+    /* 최대 높이 제한 */
+    background: #FFFFFF;
+    border: 1px solid #B9B9B9;
+    border-radius: 30px;
+    box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.25);
+    padding: 40px;
+    margin: 2rem auto;
+    /* 상하 여백 추가 */
+    display: flex;
+    /* Flexbox 사용 */
+    flex-direction: column;
+    /* 수직 정렬 */
+    align-items: center;
+    /* 수평 중앙 정렬 */
+}
 
- /* 제목 스타일 */
- .welcome-title {
-     font-weight: 700;
-     font-size: 30px;
-     color: #000000;
-     text-align: center;
-     margin-bottom: 30px;
- }
+/* 제목 스타일 */
+.welcome-title {
+    font-weight: 700;
+    font-size: 30px;
+    color: #000000;
+    text-align: center;
+    margin-bottom: 30px;
+    align-self: center;
+    /* 제목을 상단에 위치 */
+}
 
- /* 라벨 스타일 */
- .label {
-     font-weight: 700;
-     font-size: 20px;
-     color: #000000;
-     margin-bottom: 8px;
-     display: block;
- }
+/* sign-container 스타일 */
+.sign-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* 수직 중앙 정렬 */
+    align-items: center;
+    /* 수평 중앙 정렬 */
+    width: 100%;
+    /* 필요에 따라 조정 */
+    max-width: 600px;
+    /* 필요에 따라 조정 */
+    flex-grow: 1;
+    /* 남은 공간을 차지하여 중앙에 위치 */
+}
 
- /* 인풋 컨테이너 */
- .input-container {
-     display: flex;
-     align-items: center;
-     background: #FFFFFF;
-     border: 1px solid #B9B9B9;
-     border-radius: 12px;
-     padding: 12px;
-     margin-bottom: 20px;
- }
+/* 라벨 스타일 */
+.label {
+    font-weight: 700;
+    font-size: 20px;
+    color: #000000;
+    margin-bottom: 8px;
+    display: block;
+    align-self: flex-start;
+    /* 라벨을 입력 필드의 왼쪽 끝 위에 위치 */
+}
 
- /* 인풋 텍스트 */
- .input-text {
-     font-size: 20px;
-     border: none;
-     outline: none;
-     width: 100%;
-     color: #000000;
- }
+/* 인풋 컨테이너 */
+.input-container {
+    display: flex;
+    flex-direction: column;
+    /* 수직 정렬 */
+    align-items: flex-start;
+    /* 왼쪽 정렬 */
+    background: #FFFFFF;
+    border: 1px solid #B9B9B9;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 20px;
+    width: 100%;
+    /* 입력 필드의 너비를 늘리기 */
+}
 
- .input-text::placeholder {
-     color: #939393;
- }
+/* 인풋 텍스트 */
+.input-text {
+    font-size: 20px;
+    border: none;
+    outline: none;
+    width: 100%;
+    /* 입력 필드의 너비를 늘리기 */
+    color: #000000;
+}
 
- /* 개인정보 체크박스 */
- .checkbox-container {
-     display: flex;
-     align-items: center;
-     margin-bottom: 40px;
- }
+.input-text::placeholder {
+    color: #939393;
+}
 
- .checkbox-label {
-     font-weight: 700;
-     font-size: 18px;
-     color: #7BA1FF;
-     margin-left: 10px;
- }
+/* 개인정보 체크박스 */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    /* 패딩을 고려한 너비 설정 */
+    margin-bottom: 20px;
+}
 
- /* 버튼 스타일 */
- .btn-submit {
-     width: 100%;
-     height: 50px;
-     background: #7AB8FF;
-     color: #FFFFFF;
-     font-weight: 700;
-     font-size: 20px;
-     border: none;
-     border-radius: 15px;
-     cursor: pointer;
-     box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.25);
- }
+.checkbox-label {
+    font-weight: 700;
+    font-size: 18px;
+    color: #7BA1FF;
+    margin-left: 10px;
+}
 
- .btn-submit:hover {
-     background-color: #6a9ce0;
- }
+/* 버튼 스타일 */
+.btn-submit {
+    width: 100%;
+    /* 패딩을 고려한 너비 설정 */
+    height: 50px;
+    background: #7AB8FF;
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 20px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.25);
+    margin-top: 20px;
+}
+
+.btn-submit:hover {
+    background-color: #6a9ce0;
+}
+
+/* 모바일 환경 반응형 */
+@media screen and (max-width: 48rem) {
+
+    /* 768px */
+    body {
+        padding: 1rem;
+        background-color: #7AB8FF;
+    }
+
+    .login-frame {
+        width: 90%;
+        padding: 1.5rem;
+    }
+
+    /* 라벨 크기 조정 */
+    .label {
+        font-size: 1rem;
+        /* 16px */
+        margin-bottom: 0.5rem;
+    }
+
+    /* 인풋 컨테이너 조정 */
+    .input-container {
+        margin-bottom: 1rem;
+    }
+
+    /* 인풋 필드 조정 */
+    .input-field {
+        height: 2.75rem;
+        /* 44px */
+        font-size: 0.875rem;
+        /* 14px */
+        padding: 0.5rem;
+    }
+
+    /* 중복확인 버튼 조정 */
+    .check-button {
+        height: 2.75rem;
+        font-size: 0.875rem;
+    }
+
+    /* 환영 메시지 조정 */
+    .welcome-title {
+        font-size: 1.5rem;
+        /* 24px */
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-submit {
+        width: calc(100% - 3rem);
+        /* 패딩을 고려한 너비 설정 */
+        height: 3.125rem;
+        /* 50px */
+        font-size: 1.125rem;
+        /* 18px */
+    }
+
+    .checkbox-container {
+        bottom: calc(1rem + 3.125rem + 1rem);
+        /* 버튼 높이(3.125rem) + 버튼 하단 여백(1rem) + 추가 여백(1rem) */
+        width: calc(100% - 3rem);
+        /* 패딩을 고려한 너비 설정 */
+    }
+}
+
+/* 작은 모바일 화면 */
+@media screen and (max-width: 30rem) {
+
+    /* 480px */
+    body {
+        padding: 0.5rem;
+    }
+
+    .login-frame {
+        padding: 1rem;
+    }
+
+    .label {
+        font-size: 0.875rem;
+        /* 14px */
+    }
+
+    .input-field {
+        height: 2.5rem;
+        /* 40px */
+        font-size: 0.813rem;
+        /* 13px */
+    }
+
+    .check-button {
+        height: 2.5rem;
+        font-size: 0.813rem;
+    }
+
+    .welcome-title {
+        font-size: 1.25rem;
+        /* 20px */
+        margin-bottom: 1rem;
+    }
+}
+
+/* 팝업창 스타일 영역 */
+.popup {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.popup-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 10px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-agree {
+    display: block;
+    margin: 20px auto 0;
+    padding: 10px 20px;
+    background-color: #7AB8FF;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-agree:hover {
+    background-color: #6a9ce0;
+}
+
+/* 팝업창 스타일 영역 */
