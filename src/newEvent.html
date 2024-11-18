@@ -2,7 +2,7 @@
     <div class="modal-content">
         <div class="modal-header">
             <h2 style="font-weight: bold;">새 일정 추가</h2>
-            <button type="button" class="close-button">&times;</button> 
+            <button type="button" class="close-button">&times;</button>
         </div>
         <div class="modal-body">
             <form id="eventForm">
@@ -39,11 +39,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="eventCalendar">캘린더 선택</label>
+                    <label for="eventCalendar">분류</label>
                     <select id="eventCalendar">
-                        <option value="default">내 캘린더</option>
-                        <option value="work">업무</option>
-                        <option value="personal">개인</option>
+                        <option value="분류없음">분류없음</option>
+                        <option value="업무">업무</option>
+                        <option value="여행">여행</option>
+                        <option value="식사">식사</option>
+                        <option value="할일">할일</option>
                     </select>
                 </div>
 
@@ -112,7 +114,8 @@
                     <label>일시</label>
                     <div class="form-group">
                         <label for="editEventStart">시작 시간</label>
-                        <input type="datetime-local" id="editEventStart" name="eventStart" class="form-control" required>
+                        <input type="datetime-local" id="editEventStart" name="eventStart" class="form-control"
+                            required>
                     </div>
                     <div class="form-group">
                         <label for="editEventEnd">종료 시간</label>
@@ -127,11 +130,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="editEventCalendar">캘린더 선택</label>
+                    <label for="editEventCalendar">분류</label>
                     <select id="editEventCalendar">
-                        <option value="default">내 캘린더</option>
-                        <option value="work">업무</option>
-                        <option value="personal">개인</option>
+                        <option value="분류없음">분류없음</option>
+                        <option value="업무">업무</option>
+                        <option value="여행">여행</option>
+                        <option value="식사">식사</option>
+                        <option value="할일">할일</option>
                     </select>
                 </div>
 
@@ -166,7 +171,6 @@
 
                 <div class="modal-buttons">
                     <button type="submit" class="btn-submit">수정</button>
-                    <button type="button" class="btn-delete">삭제</button>
                     <button type="button" class="btn-cancel">취소</button>
                 </div>
             </form>
@@ -186,7 +190,7 @@
                 <div class="info-details">
                     <p><strong>장소:</strong> <span id="infoEventLocation"></span></p>
                     <p><strong>일시:</strong> <span id="infoEventDateTime"></span></p>
-                    <p><strong>캘린더:</strong> <span id="infoEventCalendar"></span></p>
+                    <p><strong>분류:</strong> <span id="infoEventCalendar"></span></p>
                     <p><strong>참석자:</strong> <span id="infoEventAttendees"></span></p>
                     <p><strong>설명:</strong> <span id="infoEventDescription"></span></p>
                 </div>
@@ -198,4 +202,3 @@
         </div>
     </div>
 </div>
-
