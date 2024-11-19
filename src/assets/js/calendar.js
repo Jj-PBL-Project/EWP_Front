@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     // 모달 HTML 지정 및 캘린더 초기화
-    fetch('newEvent.html')
+    fetch('modal.html')
         .then(response => response.text())
         .then(html => {
             document.getElementById('modalContainer').innerHTML = html;
@@ -99,7 +99,7 @@ function initializeCalendar() {
         },
 
         eventClick: function (info) {
-            
+
             const infoModal = document.getElementById('eventInfoModal');
             if (!infoModal) {
                 console.error('이벤트 정보 모달을 찾을 수 없습니다.');
@@ -192,7 +192,7 @@ function initializeCalendar() {
             if (titleEl) titleEl.textContent = event.title;
             if (locationEl) locationEl.textContent = event.extendedProps.location || '(없음)';
 
-            
+
             // 날짜 형식 지정
             const startDate = new Date(event.start).toLocaleString('ko-KR');
             const endDate = event.end ? new Date(event.end).toLocaleString('ko-KR') : '';
