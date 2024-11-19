@@ -93,18 +93,22 @@
 }
 
 .form-group label {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 8px;
     display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
     width: 100%;
-    padding: 8px;
+    height: 45px;
+    padding: 10px;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color 0.3s;
 }
 
 .map-container {
