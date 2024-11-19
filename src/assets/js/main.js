@@ -119,3 +119,73 @@ document.querySelector('.cd-nav__sub-list').addEventListener('click', (e) => {
   }
 });
 // 로그인, 로그아웃 테스트 영역
+
+// 로그인, 회원가입 모달 표시 함수입니당.
+document.addEventListener('DOMContentLoaded', function () {
+  // 모든 모달 창을 닫는 함수
+  function closeAllModals() {
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+      modal.style.display = 'none';
+      if (modal.parentNode === document.body) {
+        document.body.removeChild(modal);
+      }
+    });
+  }
+
+  // 로그인 모달 표시 함수
+  function showLoginModal() {
+    fetch('modal.html')
+      .then(response => response.text())
+      .then(data => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(data, 'text/html');
+        const loginModal = doc.querySelector('#loginModal');
+        document.body.appendChild(loginModal);
+        loginModal.style.display = 'block';
+
+        // 회원가입 링크 이벤트 리스너 
+        const signupLink = loginModal.querySelector('.signup_text a');
+        signupLink.addEventListener('click', function (e) {
+          e.preventDefault();
+          showSignupModal();
+        });
+
+        // 닫기 버튼 이벤트 리스너
+        const closeButton = loginModal.querySelector('.close-button');
+        closeButton.addEventListener('click', closeAllModals);
+      });
+  }
+
+  // 회원가입 모달 표시 함수
+  function showSignupModal() {
+    fetch('modal.html')
+      .then(response => response.text())
+      .then(data => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(data, 'text/html');
+        const signupModal = doc.querySelector('#signupModal');
+        document.body.appendChild(signupModal);
+        signupModal.style.display = 'block';
+
+        // 닫기 버튼 이벤트 리스너
+        const closeButton = signupModal.querySelector('.close-button');
+        closeButton.addEventListener('click', function () {
+          signupModal.style.display = 'none';
+          document.body.removeChild(signupModal);
+        });
+
+        // 회원가입 버튼 이벤트 리스너
+        const signupButton = signupModal.querySelector('.btn-submit');
+        signupButton.addEventListener('click', function (e) {
+          e.preventDefault();
+          signupModal.style.display = 'none';
+          document.body.removeChild(signupModal);
+        });
+      });
+  }
+
+  // 로그인 버튼 클릭 이벤트 여기에 로그인 처리 기능 추가하면 될듯. 
+  const loginButton = document.querySelector('.login-btn');
+  loginButton.addEventListener('click', showLoginModal);
+});
