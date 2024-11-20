@@ -102,15 +102,15 @@
 // 로그인, 로그아웃 테스트 영역(정식 릴리즈 시 삭제)
 const userState = new UserState();
 
-document.querySelector('.login-btn').addEventListener('click', () => {
+// document.querySelector('.login-btn').addEventListener('click', () => {
   // 테스트용 사용자 데이터
-  userState.login({
-    name: '홍길동',
-    id: '#HONG',
-    bio: '안녕하세요.',
-    profileImage: 'assets/img/default-profile.png'
-  });
-});
+  // userState.login({
+  //   name: '홍길동',
+  //   id: '#HONG',
+  //   bio: '안녕하세요.',
+  //   profileImage: 'assets/img/default-profile.png'
+  // });
+// });
 
 document.querySelector('.cd-nav__sub-list').addEventListener('click', (e) => {
   if (e.target.textContent === '로그아웃') {
@@ -131,7 +131,49 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.removeChild(modal);
       }
     });
-  }
+  };
+
+  /**
+   * 작성자 : 성민우
+   * 작성일 : 2024-11-20
+   */
+  // 소켓 연결
+  const socket = io("http://127.0.0.1", {
+    transports: ["websocket"]
+  });
+
+  // 연결 이벤트
+  socket.on("connect", () => {
+    console.log("서버와 연결되었습니다.");
+  });
+
+  // 오류 이벤트
+  socket.on("connect_error", (err) => {
+    console.error("Connection error:", err);
+  });
+
+  // 회원가입 이벤트
+  socket.on('signUpRes', (data) => {
+    console.log(data);
+    document.getElementById("result").innerHTML = `회원가입 결과: ${data.status} - ${data.message}`;
+  });
+
+  // 로그인 이벤트
+  socket.on('loginRes', (data) => {
+    if (data.status == 200) {
+      const { userName, userBirthday, userTag, userBio, userProfileImgUrl } = data.data;
+
+      userState.login({
+        name: userName,
+        id: userTag,
+        bio: userBio,
+        profileImage: userProfileImgUrl ?? 'assets/img/default-profile.png'
+      });
+      closeAllModals();
+    } else {
+      alert(data.message);
+    }
+  });
 
   // 로그인 모달 표시 함수
   function showLoginModal() {
@@ -154,6 +196,24 @@ document.addEventListener('DOMContentLoaded', function () {
         // 닫기 버튼 이벤트 리스너
         const closeButton = loginModal.querySelector('.close-button');
         closeButton.addEventListener('click', closeAllModals);
+
+        // 로그인 버튼 이벤트 리스너
+        const loginBtn = loginModal.querySelector("#btnLogin");
+        console.log(loginBtn);
+
+        loginBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+
+          const userId = loginModal.querySelector("#loginId").value;
+          const userPassword = loginModal.querySelector("#loginPw").value;
+
+          // 만약 알맞은 정보가 없을 경우
+          if (!userId || !userPassword)
+            return alert("아이디 또는 비밀번호가 잘못되었습니다.");
+
+          // 소켓에 데이터 전송
+          socket.emit("login", { userId, userPassword });
+        });
       });
   }
 
@@ -181,6 +241,8 @@ document.addEventListener('DOMContentLoaded', function () {
           e.preventDefault();
           signupModal.style.display = 'none';
           document.body.removeChild(signupModal);
+
+          // 소켓 코드 장소
         });
       });
   }
