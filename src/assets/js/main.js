@@ -103,13 +103,13 @@
 const userState = new UserState();
 
 // document.querySelector('.login-btn').addEventListener('click', () => {
-  // 테스트용 사용자 데이터
-  // userState.login({
-  //   name: '홍길동',
-  //   id: '#HONG',
-  //   bio: '안녕하세요.',
-  //   profileImage: 'assets/img/default-profile.png'
-  // });
+// 테스트용 사용자 데이터
+// userState.login({
+//   name: '홍길동',
+//   id: '#HONG',
+//   bio: '안녕하세요.',
+//   profileImage: 'assets/img/default-profile.png'
+// });
 // });
 
 document.querySelector('.cd-nav__sub-list').addEventListener('click', (e) => {
@@ -119,6 +119,8 @@ document.querySelector('.cd-nav__sub-list').addEventListener('click', (e) => {
   }
 });
 // 로그인, 로그아웃 테스트 영역
+
+
 
 // 로그인, 회원가입 모달 표시 함수입니당.
 document.addEventListener('DOMContentLoaded', function () {
@@ -133,10 +135,13 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   };
 
+
   /**
    * 작성자 : 성민우
    * 작성일 : 2024-11-20
    */
+
+
   // 소켓 연결
   const socket = io("http://127.0.0.1", {
     transports: ["websocket"]
@@ -228,26 +233,101 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.appendChild(signupModal);
         signupModal.style.display = 'block';
 
+        // DOM 요소 참조 수정 - signupModal 내부에서 검색
+        const elInputUsername = signupModal.querySelector('#signupId');
+        const elSuccessMessage = signupModal.querySelector('.success-message');
+        const elFailureMessage = signupModal.querySelector('.failure-message');
+        const elFailureMessageTwo = signupModal.querySelector('.failure-message2');
+        const elInputPassword = signupModal.querySelector('#signupPw');
+        const elInputPasswordRetype = signupModal.querySelector('#signupPwConfirm');
+        const elMismatchMessage = signupModal.querySelector('.status-text');
+        const elStrongPasswordMessage = signupModal.querySelector('.strongPassword-message');
+
+        // 유효성 검사 함수들
+        // 글자 수 제한
+        function idLength(value) {
+          return value.length >= 4 && value.length <= 12
+        }
+
+        // 영어 또는 숫자만 가능
+        function onlyNumberAndEnglish(str) {
+          return /^[A-Za-z0-9][A-Za-z0-9]*$/.test(str);
+        }
+
+        // 비밀번호 8글자 이상, 영어, 숫자, 특수문자 포함
+        function strongPassword(str) {
+          return /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(str);
+        }
+
+        // 비밀번호와 비밀번호 확인 일치 여부
+        function isMatch(pw1, pw2) {
+          return pw1 === pw2;
+        }
+
+        // 아이디 유효성 검사 이벤트 리스너
+        elInputUsername.addEventListener('keyup', function () {
+          if (elInputUsername.value.length !== 0) {
+            if (!onlyNumberAndEnglish(elInputUsername.value)) {
+              elSuccessMessage.classList.add('hide');
+              elFailureMessage.classList.add('hide');
+              elFailureMessageTwo.classList.remove('hide');
+            } else if (!idLength(elInputUsername.value)) {
+              elSuccessMessage.classList.add('hide');
+              elFailureMessage.classList.remove('hide');
+              elFailureMessageTwo.classList.add('hide');
+            } else {
+              elSuccessMessage.classList.remove('hide');
+              elFailureMessage.classList.add('hide');
+              elFailureMessageTwo.classList.add('hide');
+            }
+          } else {
+            elSuccessMessage.classList.add('hide');
+            elFailureMessage.classList.add('hide');
+            elFailureMessageTwo.classList.add('hide');
+          }
+        });
+
+        // 비밀번호 양식 유효성 검사 이벤트 리스너
+        elInputPassword.addEventListener('keyup', function () {
+          if (elInputPassword.value.length !== 0) {
+            elStrongPasswordMessage.classList.toggle('hide', strongPassword(elInputPassword.value));
+          } else {
+            elStrongPasswordMessage.classList.add('hide');
+          }
+        });
+
+        // 비밀번호 확인 이벤트 리스너
+        elInputPasswordRetype.addEventListener('keyup', function () {
+          if (elInputPasswordRetype.value.length !== 0) {
+            if (isMatch(elInputPassword.value, elInputPasswordRetype.value)) {
+              elMismatchMessage.classList.add('hide');
+            } else {
+              elMismatchMessage.classList.remove('hide');
+            }
+          } else {
+            elMismatchMessage.classList.add('hide');
+          }
+        });
+
         // 닫기 버튼 이벤트 리스너
         const closeButton = signupModal.querySelector('.close-button');
-        closeButton.addEventListener('click', function () {
-          signupModal.style.display = 'none';
-          document.body.removeChild(signupModal);
-        });
+        closeButton.addEventListener('click', closeAllModals);
 
         // 회원가입 버튼 이벤트 리스너
         const signupButton = signupModal.querySelector('.btn-submit');
         signupButton.addEventListener('click', function (e) {
           e.preventDefault();
-          signupModal.style.display = 'none';
-          document.body.removeChild(signupModal);
-
-          // 소켓 코드 장소
+          // 회원가입 처리 로직
         });
+      })
+      .catch(error => {
+        console.error('모달 로딩 중 오류 발생:', error);
       });
   }
 
   // 로그인 버튼 클릭 이벤트 여기에 로그인 처리 기능 추가하면 될듯. 
   const loginButton = document.querySelector('.login-btn');
   loginButton.addEventListener('click', showLoginModal);
+
 });
+

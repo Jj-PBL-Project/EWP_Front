@@ -264,13 +264,13 @@
                 <!-- 성명 입력 -->
                 <label class="label">성명</label>
                 <div class="input-container">
-                    <input type="text" class="input-text" placeholder="성명을 입력하세요" maxlength="20">
+                    <input type="text" class="input-text" id="userName" placeholder="성명을 입력하세요" maxlength="20">
                 </div>
 
                 <!-- 생년월일 선택 -->
                 <label class="label">생년월일</label>
                 <div class="input-container">
-                    <input type="date" class="input-text" placeholder="생년월일을 선택하세요">
+                    <input type="date" class="input-text" id="userBirthday" placeholder="생년월일을 선택하세요">
                 </div>
 
                 <!-- 아이디 입력 -->
@@ -278,12 +278,16 @@
                 <div class="input-container">
                     <input type="text" id="signupId" class="input-text" placeholder="아이디를 입력하세요" maxlength="20">
                 </div>
+                <div class="success-message hide">사용할 수 있는 아이디입니다</div>
+                <div class="failure-message hide">아이디는 4~12글자이어야 합니다</div>
+                <div class="failure-message2 hide">영어 또는 숫자만 가능합니다</div>
 
                 <!-- 비밀번호 입력 -->
                 <label class="label">비밀번호</label>
                 <div class="input-container">
                     <input type="password" id="signupPw" class="input-text" placeholder="비밀번호를 입력하세요" maxlength="20">
                 </div>
+                <div class="strongPassword-message hide">8글자 이상, 영문, 숫자, 특수문자(@$!%*#?&)를 사용하세요</div>
 
                 <!-- 비밀번호 확인 입력 -->
                 <label class="label">비밀번호 확인</label>
@@ -291,6 +295,8 @@
                     <input type="password" id="signupPwConfirm" class="input-text" placeholder="비밀번호를 다시 입력하세요"
                         maxlength="20">
                 </div>
+                <div id="passwordStatus" class="status-text hide">비밀번호가 일치하지 않습니다.</div>
+                <br>
 
                 <!-- 개인정보 수집 동의 -->
                 <div class="checkbox-container">
@@ -319,3 +325,18 @@
         </div>
     </div>
 </div>
+
+<!--
+<div class='map_wrap'>
+    <form id='search'>
+        <input type='text' placeholder='장소명을 입력하세요.' value='' id='keyword'>
+        <button type='submit'>
+            <i class='ph ph-magnifying-glass text-18 block'></i>
+        </button>
+    </form>
+    <div id='menu_wrap'>
+        <ul id='placesList'></ul>
+        <div id='pagination' class='flex-center'></div>
+    </div>
+</div>  
+--->

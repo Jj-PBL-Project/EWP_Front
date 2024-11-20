@@ -503,3 +503,47 @@
 .checkbox-label:hover .tooltip-text {
     visibility: visible;
 }
+
+.status-text {
+    font-size: 12px;
+    color: red;
+    margin-top: -20px;
+    margin-bottom: 10px;
+}
+
+.status-text.success {
+    font-size: 12px;
+    color: green;
+}
+
+.hide {
+    display: none;
+}
+
+.success-message {
+    font-size: 12px;
+    color: green;
+    margin-top: -20px;
+    margin-bottom: 10px;
+}
+
+.failure-message {
+    font-size: 12px;
+    color: red;
+    margin-top: -20px;
+    margin-bottom: 10px;
+}
+
+.failure-message2 {
+    font-size: 12px;
+    color: red;
+    margin-top: -20px;
+    margin-bottom: 10px;
+}
+
+.strongPassword-message {
+    font-size: 12px;
+    color: red;
+    margin-top: -20px;
+    margin-bottom: 10px;
+}
