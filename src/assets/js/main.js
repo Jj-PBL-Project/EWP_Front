@@ -318,6 +318,55 @@ document.addEventListener('DOMContentLoaded', function () {
         signupButton.addEventListener('click', function (e) {
           e.preventDefault();
           // 회원가입 처리 로직
+
+          // 모든 입력값 가져오기
+          const userName = signupModal.querySelector('#userName').value;
+          const userBirthday = signupModal.querySelector('#userBirthday').value;
+          const userId = elInputUsername.value;
+          const userPassword = elInputPassword.value;
+          const userPasswordConfirm = elInputPasswordRetype.value;
+          const termsAgreed = signupModal.querySelector('#terms').checked;
+
+          // 모든 필드가 입력되었는지 확인
+          if (!userName || !userBirthday || !userId || !userPassword || !userPasswordConfirm) {
+            alert('모든 필수 정보를 입력해주세요.');
+            return;
+          }
+
+          // 아이디 유효성 검사
+          if (!idLength(userId) || !onlyNumberAndEnglish(userId)) {
+            alert('아이디는 4~12글자의 영문자와 숫자만 사용 가능합니다.');
+            elInputUsername.focus();
+            return;
+          }
+
+          // 비밀번호 유효성 검사
+          if (!strongPassword(userPassword)) {
+            alert('비밀번호는 8글자 이상이며, 영문자, 숫자, 특수문자를 포함해야 합니다.');
+            elInputPassword.focus();
+            return;
+          }
+
+          // 비밀번호 일치 확인
+          if (!isMatch(userPassword, userPasswordConfirm)) {
+            alert('비밀번호가 일치하지 않습니다.');
+            elInputPasswordRetype.focus();
+            return;
+          }
+
+          // 개인정보 수집 동의 확인
+          if (!termsAgreed) {
+            alert('개인정보 수집에 동의해주세요.');
+            return;
+          }
+
+          // 이상이 없으면 소켓에 데이터 전송, 이 부분 백엔드 쪽에서 보완하시면 됩니다.
+          socket.emit('signUp', {
+            userName,
+            userBirthday,
+            userId,
+            userPassword
+          });
         });
       })
       .catch(error => {
