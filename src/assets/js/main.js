@@ -159,8 +159,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // 회원가입 이벤트
   socket.on('signUpRes', (data) => {
-    console.log(data);
-    document.getElementById("result").innerHTML = `회원가입 결과: ${data.status} - ${data.message}`;
+    if (data.status == 200) {
+      // 회원가입이 성공한 경우 이벤트
+    } else {
+      // 회원가입이 실패한 경우 이벤트
+    }
+  });
+
+  // 중복 아이디 확인 이벤트
+  socket.on('checkUserIdRes', (data) => {
+    if (data.status == 200) {
+      // 사용 가능한 아이디 일 경우 이벤트
+    } else {
+      // 사용이 불가능한 아이디 일 경우 이벤트
+    }
   });
 
   // 로그인 이벤트
@@ -323,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function () {
           }
 
           // ***여기에 중복확인 로직 작성하시면 됩니다.***
-
+          socket.emit("checkUserIdRes", { userId });
         });
 
         // 닫기 버튼 이벤트 리스너
