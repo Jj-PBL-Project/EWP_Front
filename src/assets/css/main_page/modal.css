@@ -219,7 +219,7 @@
     border-bottom: none;
     padding-bottom: 20px;
     padding-top: 20px;
-    /* 닫기 버튼과 겹치지 않도록 상단 여백 추가 */
+    /* 닫기 버튼과 겹치지 ���도록 상단 여백 추가 */
 }
 
 #loginModal .logo {
@@ -380,14 +380,14 @@
     color: white;
     transition: background-color 0.3s;
     margin: 0 auto;
-    /* 좌우 마진을 같게 설정 */
+    /* 좌우 마진을 같게 ���정 */
 }
 
 #signupModal .btn-submit:hover {
     background-color: #5A7FDE;
 }
 
-/* 개인정보 취���방침 동의 모달 스타일 */
+/* 개인정보 취급방침 동의 모달 스타일 */
 #privacyPolicyModal .modal-content {
     max-width: 600px;
     padding: 30px;
@@ -546,4 +546,34 @@
     color: red;
     margin-top: -20px;
     margin-bottom: 10px;
+}
+
+/* 아이디 입력 컨테이너 스타일 */
+.id-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.id-container .input-text {
+    flex: 1;
+    width: calc(100% - 90px);
+    /* 중복확인 버튼 너비만큼 공간 확보 */
+}
+
+.id-check-btn {
+    width: 80px;
+    height: 45px;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #7BA1FF;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.id-check-btn:hover {
+    background-color: #5A7FDE;
 }

@@ -309,6 +309,23 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         });
 
+        // 아이디 중복확인 버튼 이벤트 리스너
+        const idCheckButton = signupModal.querySelector('.id-check-btn');
+        idCheckButton.addEventListener('click', function (e) {
+          e.preventDefault();
+          const userId = elInputUsername.value;
+
+          // 아이디 형식 검사
+          if (!idLength(userId) || !onlyNumberAndEnglish(userId)) {
+            alert('아이디는 4~12글자의 영문자와 숫자만 사용 가능합니다.');
+            elInputUsername.focus();
+            return;
+          }
+
+          // ***여기에 중복확인 로직 작성하시면 됩니다.***
+
+        });
+
         // 닫기 버튼 이벤트 리스너
         const closeButton = signupModal.querySelector('.close-button');
         closeButton.addEventListener('click', closeAllModals);
@@ -317,7 +334,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const signupButton = signupModal.querySelector('.btn-submit');
         signupButton.addEventListener('click', function (e) {
           e.preventDefault();
-          // 회원가입 처리 로직
 
           // 모든 입력값 가져오기
           const userName = signupModal.querySelector('#userName').value;
@@ -367,6 +383,10 @@ document.addEventListener('DOMContentLoaded', function () {
             userId,
             userPassword
           });
+
+          // 회원가입 성공 시 회원가입 모달이 닫히고, 로그인 모달이 보여지는 형식
+          closeAllModals();
+          showLoginModal();
         });
       })
       .catch(error => {
