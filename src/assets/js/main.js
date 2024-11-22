@@ -142,8 +142,15 @@ document.addEventListener('DOMContentLoaded', function () {
    */
 
 
+  // 호스트 설정
+  const host = {
+    protocal: "http",
+    addr: "202.31.246.48",
+    port: "3000"
+  }
+
   // 소켓 연결
-  const socket = io("http://127.0.0.1", {
+  const socket = io(host.protocal + "://" + host.addr + ":" + host.port, {
     transports: ["websocket"]
   });
 
