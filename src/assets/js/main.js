@@ -146,11 +146,12 @@ document.addEventListener('DOMContentLoaded', function () {
   const host = {
     protocal: "http",
     addr: "202.31.246.48",
-    port: "3000"
+    path: "/api/socket.io"
   }
 
   // 소켓 연결
-  const socket = io(host.protocal + "://" + host.addr + ":" + host.port, {
+  const socket = io(host.protocal + "://" + host.addr, {
+    path: host.path,
     transports: ["websocket"]
   });
 
