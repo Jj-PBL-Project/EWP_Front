@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // 호스트 설정
   const host = {
-    protocal: "http",
+    protocal: "https",
     addr: "ewp.devist.me",
     path: "/api/socket.io"
   }
