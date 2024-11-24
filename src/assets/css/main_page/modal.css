@@ -582,3 +582,58 @@
 .id-check-btn:hover {
     background-color: #5A7FDE;
 }
+
+/* 장소 입력 컨테이너 스타일 */
+.location-input {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.location-input input[type="text"] {
+    flex: 1;
+    width: calc(100% - 90px);
+}
+
+/* 지도 검색 버튼 스타일 */
+#mapSearch,
+#editMapSearch {
+    padding: 5px 10px;
+    background-color: #7BA1FF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    height: 45px;
+}
+
+#mapSearch:hover,
+#editMapSearch:hover {
+    background-color: #5A7FDE;
+}
+
+/* 참석자 리스트 스타일 */
+.attendees-list {
+    margin-top: 10px;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.attendee-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f0f0f0;
+    padding: 8px 12px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+}
+
+.attendee-item .remove-attendee {
+    background: none;
+    border: none;
+    color: #ff3860;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0 5px;
+}

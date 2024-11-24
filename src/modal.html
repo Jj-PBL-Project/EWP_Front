@@ -14,7 +14,7 @@
                 <div class="form-group">
                     <label for="eventLocation">장소</label>
                     <div class="location-input">
-                        <input type="text" id="eventLocation">
+                        <input type="text" id="eventLocation" class="input-text">
                         <button type="button" id="mapSearch">지도 검색</button>
                     </div>
                 </div>
@@ -33,8 +33,10 @@
 
                 <div class="form-group">
                     <label for="eventAttendees">참석자</label>
-                    <input type="text" id="eventAttendees" placeholder="#사용자ID">
-                    <!-- 아래는 참석자 목록을 표시할 div -->
+                    <div class="input-container id-container">
+                        <input type="text" id="eventAttendees" class="input-text" placeholder="#사용자ID">
+                        <button type="button" class="id-check-btn">사용자 추가</button>
+                    </div>
                     <div id="attendeesList" class="attendees-list"></div>
                 </div>
 
@@ -105,7 +107,7 @@
                 <div class="form-group">
                     <label for="editEventLocation">장소</label>
                     <div class="location-input">
-                        <input type="text" id="editEventLocation">
+                        <input type="text" id="editEventLocation" class="input-text">
                         <button type="button" id="editMapSearch">지도 검색</button>
                     </div>
                 </div>
@@ -125,7 +127,10 @@
 
                 <div class="form-group">
                     <label for="editEventAttendees">참석자</label>
-                    <input type="text" id="editEventAttendees" placeholder="#사용자ID">
+                    <div class="input-container id-container">
+                        <input type="text" id="editEventAttendees" class="input-text" placeholder="#사용자ID">
+                        <button type="button" class="id-check-btn">사용자 추가</button>
+                    </div>
                     <div id="editAttendeesList" class="attendees-list"></div>
                 </div>
 

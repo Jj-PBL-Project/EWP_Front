@@ -8,6 +8,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 });
 
+// 전역 Set 객체 선언
+let currentEventAttendees = new Set();
+let editEventAttendees = new Set();
+
 // 캘린더 초기화 함수
 function initializeCalendar() {
     var calendarEl = document.getElementById('calendar');
@@ -44,6 +48,13 @@ function initializeCalendar() {
             const form = document.getElementById('eventForm');
             const closeButton = document.querySelector('.close-button');
 
+            // 모달 열릴 때 참석자 목록 초기화
+            currentEventAttendees.clear();
+            const attendeesList = document.getElementById('attendeesList');
+            if (attendeesList) {
+                attendeesList.innerHTML = '';
+            }
+
             // 시작 시간 설정
             const startDate = new Date(info.date);
             startDate.setDate(startDate.getDate() + 1);
@@ -55,6 +66,8 @@ function initializeCalendar() {
             document.getElementById('eventEnd').value = endDate.toISOString().slice(0, 16);
 
             modal.style.display = "block";
+
+            
 
             // 모달 닫기 이벤트 핸들러들
             form.onsubmit = function (e) {
@@ -71,10 +84,11 @@ function initializeCalendar() {
                     extendedProps: {
                         calendar: document.getElementById('eventCalendar').value,
                         reminder: document.getElementById('eventReminder').value,
-                        attendees: document.getElementById('eventAttendees').value
+                        attendees: Array.from(currentEventAttendees) // Set을 배열로 변환
                     }
                 });
 
+                currentEventAttendees.clear(); // Set 초기화
                 modal.style.display = "none";
                 form.reset();
             };
@@ -199,7 +213,19 @@ function initializeCalendar() {
             if (dateTimeEl) dateTimeEl.textContent = endDate ? `${startDate} ~ ${endDate}` : startDate;
 
             if (calendarEl) calendarEl.textContent = event.extendedProps.calendar || '기본';
-            if (attendeesEl) attendeesEl.textContent = event.extendedProps.attendees || '(없음)';
+            if (attendeesEl) {
+                const attendeesList = Array.from(event.extendedProps.attendees || []);
+                if (attendeesList.length === 0) {
+                    attendeesEl.textContent = '(없음)';
+                } else if (attendeesList.length === 1) {
+                    attendeesEl.textContent = attendeesList[0];
+                } else {
+                    // 툴팁으로 전체 참석자 목록을 보여주는 기능 추가
+                    const attendeesText = `${attendeesList[0]} 외 ${attendeesList.length - 1}명`;
+                    const tooltipText = attendeesList.join('\n');
+                    attendeesEl.innerHTML = `<span class="attendees-tooltip" title="${tooltipText}">${attendeesText}</span>`;
+                }
+            }
             if (descriptionEl) descriptionEl.textContent = event.extendedProps.description || '(없음)';
 
             // 모달 표시
@@ -225,31 +251,50 @@ function initializeCalendar() {
                         return;
                     }
 
-                    // 수정 모달ckddp epdlxj sjgrl
+                    // 수정 모달의 필드들
                     const editEventTitle = document.getElementById('editEventTitle');
                     const editEventLocation = document.getElementById('editEventLocation');
                     const editEventStart = document.getElementById('editEventStart');
                     const editEventEnd = document.getElementById('editEventEnd');
-                    const editEventAttendees = document.getElementById('editEventAttendees');
                     const editEventCalendar = document.getElementById('editEventCalendar');
                     const editEventDescription = document.getElementById('editEventDescription');
                     const editEventReminder = document.getElementById('editEventReminder');
                     const editEventColor = document.getElementById('editEventColor');
 
-                    if (!editEventTitle || !editEventLocation || !editEventStart || !editEventEnd || !editEventAttendees || !editEventCalendar || !editEventDescription || !editEventReminder || !editEventColor) {
-                        console.error('모달 필드가 안보여');
-                        return; // 디버그용 
-                    }
-
+                    // 기본 정보 설정
                     editEventTitle.value = event.title;
                     editEventLocation.value = event.extendedProps.location || '';
-                    editEventStart.value = new Date(event.start.getTime() - (event.start.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
-                    editEventEnd.value = event.end ? new Date(event.end.getTime() - (event.end.getTimezoneOffset() * 60000)).toISOString().slice(0, 16) : '';
-                    editEventAttendees.value = event.extendedProps.attendees || '';
                     editEventCalendar.value = event.extendedProps.calendar || 'default';
                     editEventDescription.value = event.extendedProps.description || '';
                     editEventReminder.value = event.extendedProps.reminder || '0';
                     editEventColor.value = event.backgroundColor || 'red';
+
+                    // 날짜 정보 설정
+                    const startDate = new Date(event.start);
+                    startDate.setMinutes(startDate.getMinutes() - startDate.getTimezoneOffset());
+                    editEventStart.value = startDate.toISOString().slice(0, 16);
+
+                    if (event.end) {
+                        const endDate = new Date(event.end);
+                        endDate.setMinutes(endDate.getMinutes() - endDate.getTimezoneOffset());
+                        editEventEnd.value = endDate.toISOString().slice(0, 16);
+                    }
+
+                    // 수정 모달에서 기존 참석자 목록 표시 부분 수정
+                    const editEventAttendeesInput = document.getElementById('editEventAttendees');
+                    const editAttendeesList = document.getElementById('editAttendeesList');
+                    
+                    // input 값과 목록 초기화
+                    editEventAttendeesInput.value = '';
+                    editEventAttendees.clear();  // Set 객체 초기화
+                    editAttendeesList.innerHTML = '';
+
+                    // 기존 참석자 목록 복원
+                    const attendees = event.extendedProps.attendees || [];
+                    attendees.forEach(attendee => {
+                        editEventAttendees.add(attendee);
+                        addAttendeeToList(attendee, editAttendeesList, editEventAttendees);
+                    });
 
                     editModal.style.display = "block";
 
@@ -265,7 +310,7 @@ function initializeCalendar() {
                             event.setExtendedProp('description', editEventDescription.value);
                             event.setExtendedProp('calendar', editEventCalendar.value);
                             event.setExtendedProp('reminder', editEventReminder.value);
-                            event.setExtendedProp('attendees', editEventAttendees.value);
+                            event.setExtendedProp('attendees', Array.from(editEventAttendees));
                             event.setProp('backgroundColor', editEventColor.value);
 
                             editModal.style.display = "none";
@@ -314,6 +359,8 @@ function initializeCalendar() {
                     infoModal.style.display = "none";
                 }
             };
+
+            
         },
         dayMaxEvents: true,
         events: [
@@ -342,3 +389,61 @@ function initializeCalendar() {
 
     calendar.render();
 }
+
+// 참석자 추가 함수
+function addAttendeeToList(value, listElement, attendeesSet) {
+    const attendeeItem = document.createElement('div');
+    attendeeItem.className = 'attendee-item';
+    attendeeItem.innerHTML = `
+        <span>${value}</span>
+        <button type="button" class="remove-attendee">&times;</button>
+    `;
+
+    attendeeItem.querySelector('.remove-attendee').addEventListener('click', function() {
+        attendeesSet.delete(value);
+        attendeeItem.remove();
+    });
+
+    listElement.appendChild(attendeeItem);
+}
+
+// 이벤트 위임을 통한 참석자 추가 버튼 처리
+document.addEventListener('click', function(e) {
+    if (e.target.matches('#eventModal .id-check-btn')) {
+        const input = document.getElementById('eventAttendees');
+        const list = document.getElementById('attendeesList');
+        const value = input.value.trim();
+        
+        if (!value) return;
+        
+        // #이 없으면 자동으로 추가
+        const attendeeId = value.startsWith('#') ? value : '#' + value;
+        
+        if (currentEventAttendees.has(attendeeId)) {
+            alert('이미 추가된 참석자입니다.');
+            return;
+        }
+
+        currentEventAttendees.add(attendeeId);
+        addAttendeeToList(attendeeId, list, currentEventAttendees);
+        input.value = '';
+    } 
+    else if (e.target.matches('#editEventModal .id-check-btn')) {
+        const input = document.getElementById('editEventAttendees');
+        const list = document.getElementById('editAttendeesList');
+        const value = input.value.trim();
+        
+        if (!value) return;
+        
+        const attendeeId = value.startsWith('#') ? value : '#' + value;
+        
+        if (editEventAttendees.has(attendeeId)) {
+            alert('이미 추가된 참석자입니다.');
+            return;
+        }
+
+        editEventAttendees.add(attendeeId);
+        addAttendeeToList(attendeeId, list, editEventAttendees);
+        input.value = '';
+    }
+});
