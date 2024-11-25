@@ -12,12 +12,24 @@
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
   <script src="assets\js\calendar.js"></script>
 
+  <!-- 카카오맵 사용을 위한 링크 -->
+  <script type="text/javascript"
+    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=04c334ec25b920fb97c780031378a28a&libraries=services"></script>
+
   <!-- css링크 -->
   <link rel="stylesheet" href="assets/css/reactive_asset.css"> <!-- 반응형 에셋 css-->
   <link rel="stylesheet" href="assets/css/global.css"> <!-- 전역 css -->
 
   <link rel="stylesheet" href="assets/css/main_page/main.css">
   <link rel="stylesheet" href="assets/css/main_page/modal.css">
+  <link rel="stylesheet" href="assets/css/map.css">
+
+  <!-- PWA -->
+  <link rel="manifest" href="assets\manifest.json" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="EWP">
+  <link rel="apple-touch-icon" href="assets/img/maskable_icon_x192.png">
 
   <script src="assets/js/userState.js"></script>
   <title>웹 일정 관리 프로젝트</title>
@@ -31,7 +43,7 @@
 
     <div class="cd-search js-cd-search">
       <form>
-        <input id="searchEvent" class="reset" type="search" placeholder="Search...">
+        <input class="reset" type="search" placeholder="Search...">
       </form>
     </div>
 
@@ -139,7 +151,16 @@
   <script src="assets/js/util.js"></script>
   <script src="assets/js/menu-aim.js"></script>
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/map.js"></script>
   <div id="modalContainer"></div>
+  <!-- PWA -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('assets/js/service-worker.js').then(() => {
+        console.log('Service Worker registered!');
+      });
+    }
+  </script>
 </body>
 
 </html>
