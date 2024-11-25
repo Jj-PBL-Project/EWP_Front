@@ -15,7 +15,7 @@
                     <label for="eventLocation">장소</label>
                     <div class="location-input">
                         <input type="text" id="eventLocation" class="input-text">
-                        <button type="button" id="mapSearch">지도 검색</button>
+                        <button type="button" id="mapSearch">장소검색</button>
                     </div>
                 </div>
 
@@ -108,7 +108,7 @@
                     <label for="editEventLocation">장소</label>
                     <div class="location-input">
                         <input type="text" id="editEventLocation" class="input-text">
-                        <button type="button" id="editMapSearch">지도 검색</button>
+                        <button type="button" id="editMapSearch">장소검색</button>
                     </div>
                 </div>
 
@@ -332,17 +332,27 @@
     </div>
 </div>
 
-<!--
-<div class='map_wrap'>
-    <form id='search'>
-        <input type='text' placeholder='장소명을 입력하세요.' value='' id='keyword'>
-        <button type='submit'>
-            <i class='ph ph-magnifying-glass text-18 block'></i>
-        </button>
-    </form>
-    <div id='menu_wrap'>
-        <ul id='placesList'></ul>
-        <div id='pagination' class='flex-center'></div>
+<!-- 장소 검색 모달 창 -->
+<div id="mapSearchModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close-button">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="map_wrap">
+                <div id="menu_wrap" class="bg_white">
+                    <div class="option">
+                        <form id="searchForm">
+                            <input type="text" value="" id="keyword" placeholder="장소를 검색하세요">
+                            <button type="button" id="searchButton">검색</button>
+                        </form>
+                    </div>
+                    <ul id="placesList"></ul>
+                    <div id="pagination"></div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>  
---->
+</div>
+
+<!-- 테스트용 -->

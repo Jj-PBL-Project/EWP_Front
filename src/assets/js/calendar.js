@@ -67,7 +67,7 @@ function initializeCalendar() {
 
             modal.style.display = "block";
 
-            
+
 
             // 모달 닫기 이벤트 핸들러들
             form.onsubmit = function (e) {
@@ -283,7 +283,7 @@ function initializeCalendar() {
                     // 수정 모달에서 기존 참석자 목록 표시 부분 수정
                     const editEventAttendeesInput = document.getElementById('editEventAttendees');
                     const editAttendeesList = document.getElementById('editAttendeesList');
-                    
+
                     // input 값과 목록 초기화
                     editEventAttendeesInput.value = '';
                     editEventAttendees.clear();  // Set 객체 초기화
@@ -360,7 +360,7 @@ function initializeCalendar() {
                 }
             };
 
-            
+
         },
         dayMaxEvents: true,
         events: [
@@ -399,7 +399,7 @@ function addAttendeeToList(value, listElement, attendeesSet) {
         <button type="button" class="remove-attendee">&times;</button>
     `;
 
-    attendeeItem.querySelector('.remove-attendee').addEventListener('click', function() {
+    attendeeItem.querySelector('.remove-attendee').addEventListener('click', function () {
         attendeesSet.delete(value);
         attendeeItem.remove();
     });
@@ -407,43 +407,122 @@ function addAttendeeToList(value, listElement, attendeesSet) {
     listElement.appendChild(attendeeItem);
 }
 
-// 이벤트 위임을 통한 참석자 추가 버튼 처리
-document.addEventListener('click', function(e) {
+// 이벤트 위임을 통한 참석자 추가 버튼 처리, 이 함수에 소캣 통신 기능 추가 바람(백엔드)
+document.addEventListener('click', function (e) {
+    // 일정 추가 참석자 추가 
     if (e.target.matches('#eventModal .id-check-btn')) {
         const input = document.getElementById('eventAttendees');
         const list = document.getElementById('attendeesList');
         const value = input.value.trim();
-        
+
         if (!value) return;
-        
+
         // #이 없으면 자동으로 추가
         const attendeeId = value.startsWith('#') ? value : '#' + value;
-        
+
         if (currentEventAttendees.has(attendeeId)) {
             alert('이미 추가된 참석자입니다.');
             return;
         }
 
+        // 이 부분에 소켓 통신 추가
+        // 소켓 통신으로 사용자가 존재하는지 확인하고, 존재하면 참석자 추가
+        // 존재하지 않으면 alert으로 사용자가 없다고 알림
+
+        // 입력된 사용자의 아이디를 리스트로 추가
         currentEventAttendees.add(attendeeId);
         addAttendeeToList(attendeeId, list, currentEventAttendees);
         input.value = '';
-    } 
+    }
+    // 일정 수정 참석자 추가
     else if (e.target.matches('#editEventModal .id-check-btn')) {
         const input = document.getElementById('editEventAttendees');
         const list = document.getElementById('editAttendeesList');
         const value = input.value.trim();
-        
+
         if (!value) return;
-        
+
         const attendeeId = value.startsWith('#') ? value : '#' + value;
-        
+
         if (editEventAttendees.has(attendeeId)) {
             alert('이미 추가된 참석자입니다.');
             return;
         }
 
+        // 이 부분에 소켓 통신 추가
+        // 소켓 통신으로 사용자가 존재하는지 확인하고, 존재하면 참석자 추가
+        // 존재하지 않으면 alert으로 사용자가 없다고 알림
+
+        // 입력된 사용자의 아이디를 리스트로 추가
         editEventAttendees.add(attendeeId);
         addAttendeeToList(attendeeId, list, editEventAttendees);
         input.value = '';
     }
 });
+
+// 장소 검색 버튼 클릭 이벤트 처리
+document.addEventListener('click', function (e) {
+    if (e.target.matches('#mapSearch, #editMapSearch')) {
+        const mapSearchModal = document.getElementById('mapSearchModal');
+        mapSearchModal.style.display = "block";
+
+        // 현재 활성화된 모달의 location input 저장
+        window.activeLocationInput = e.target.id === 'mapSearch' ?
+            document.getElementById('eventLocation') :
+            document.getElementById('editEventLocation');
+    }
+});
+
+// 장소 검색 모달 닫기 버튼 이벤트 처리
+document.addEventListener('click', function (e) {
+    if (e.target.matches('#mapSearchModal .close-button')) {
+        const mapSearchModal = document.getElementById('mapSearchModal');
+        mapSearchModal.style.display = "none";
+    }
+});
+
+// 검색 버튼 클릭 이벤트 처리
+document.addEventListener('click', function (e) {
+    if (e.target.id === 'searchButton') {
+        searchPlaces();
+    }
+});
+
+// 검색어 입력 후 엔터키 처리
+document.addEventListener('keypress', function (e) {
+    if (e.target.id === 'keyword' && e.key === 'Enter') {
+        e.preventDefault();
+        searchPlaces();
+    }
+});
+
+// 리스트에서 장소를 선택하면 해당 장소의 주소와 상세 주소를 문자열로 반환
+function getListItem(index, places) {
+    var el = document.createElement('li');
+    var itemStr = '<div class="info">' +
+        '   <h5>' + places.place_name + '</h5>';
+
+    if (places.road_address_name) {
+        itemStr += '    <span>' + places.road_address_name + '</span>' +
+            '   <span class="jibun gray">' + places.address_name + '</span>';
+    } else {
+        itemStr += '    <span>' + places.address_name + '</span>';
+    }
+    itemStr += '  <span class="tel">' + places.phone + '</span>' +
+        '</div>';
+
+    el.innerHTML = itemStr;
+    el.className = 'item';
+
+    // 장소 클릭 이벤트 수정
+    el.onclick = function () {
+        const address = places.place_name + ', ' + (places.road_address_name || places.address_name);
+        if (window.activeLocationInput) {
+            window.activeLocationInput.value = address;
+        }
+        document.getElementById('mapSearchModal').style.display = "none";
+    };
+
+    return el;
+}
+
