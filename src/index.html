@@ -31,6 +31,13 @@
   <meta name="apple-mobile-web-app-title" content="EWP">
   <link rel="apple-touch-icon" href="assets/img/maskable_icon_x192.png">
 
+  <!-- PWA -->
+  <link rel="manifest" href="assets\manifest.json" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="EWP">
+  <link rel="apple-touch-icon" href="assets/img/maskable_icon_x192.png">
+
   <script src="assets/js/userState.js"></script>
   <title>웹 일정 관리 프로젝트</title>
 </head>
@@ -43,7 +50,7 @@
 
     <div class="cd-search js-cd-search">
       <form>
-        <input class="reset" type="search" placeholder="Search...">
+        <input id="searchEvent" class="reset" type="search" placeholder="Search...">
       </form>
     </div>
 

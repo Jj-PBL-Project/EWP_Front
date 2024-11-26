@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // 소켓 연결
-  const socket = io(host.protocal + "://" + host.addr, {
+  const socket = io(host.protocal + "://" + host.addr + "/", {
     path: host.path,
     transports: ["websocket"]
   });
