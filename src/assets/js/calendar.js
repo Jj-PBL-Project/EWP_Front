@@ -1,3 +1,5 @@
+let calendar; // 전역 변수로 calendar 인스턴스 선언
+
 document.addEventListener('DOMContentLoaded', function () {
     // 모달 HTML 지정 및 캘린더 초기화
     fetch('modal.html')
@@ -5,8 +7,67 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(html => {
             document.getElementById('modalContainer').innerHTML = html;
             initializeCalendar(); // 모달 로드 후 캘린더 초기화
+            initializeFilters(); // 필터 초기화
         });
 });
+
+// 필터 초기화 함수 추가
+function initializeFilters() {
+    const filterCheckboxes = document.querySelectorAll('.event_filter');
+
+    filterCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function () {
+            const selectedCategories = Array.from(filterCheckboxes)
+                .filter(cb => cb.checked && cb.id !== 'selectAll')  // selectAll 제외
+                .map(cb => cb.value);
+
+            console.log('Selected Categories:', selectedCategories);
+
+            if (calendar && typeof calendar.getEvents === 'function') {
+                const events = calendar.getEvents();
+                events.forEach(event => {
+                    const eventCategory = event.extendedProps.calendar;
+                    console.log('Event Category:', eventCategory);
+
+                    // 수정된 필터링 로직
+                    if (selectedCategories.length === 0 && document.getElementById('selectAll').checked) {
+                        // 모두 선택이 체크되어 있을 때만 모든 이벤트 표시
+                        event.setProp('display', '');
+                    } else if (selectedCategories.includes(eventCategory)) {
+                        // 선택된 카테고리에 포함된 이벤트만 표시
+                        event.setProp('display', '');
+                    } else {
+                        // 그 외의 경우 숨김
+                        event.setProp('display', 'none');
+                    }
+                });
+            }
+        });
+    });
+
+    // 모두 선택 체크박스 이벤트 핸들러 추가
+    const selectAllCheckbox = document.getElementById('selectAll');
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function () {
+            const isChecked = selectAllCheckbox.checked;
+
+            // 다른 체크박스들의 상태 변경
+            filterCheckboxes.forEach(checkbox => {
+                if (checkbox !== selectAllCheckbox) {
+                    checkbox.checked = isChecked;
+                }
+            });
+
+            // 이벤트 표시/숨김 처리
+            if (calendar && typeof calendar.getEvents === 'function') {
+                const events = calendar.getEvents();
+                events.forEach(event => {
+                    event.setProp('display', isChecked ? '' : 'none');
+                });
+            }
+        });
+    }
+}
 
 // 전역 Set 객체 선언
 let currentEventAttendees = new Set();
@@ -15,7 +76,7 @@ let editEventAttendees = new Set();
 // 캘린더 초기화 함수
 function initializeCalendar() {
     var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
+    calendar = new FullCalendar.Calendar(calendarEl, {
 
         // Tool Bar 목록 document : https://fullcalendar.io/docs/toolbar
         headerToolbar: {
@@ -346,7 +407,7 @@ function initializeCalendar() {
             const deleteButton = infoModal.querySelector('.btn-delete');
             if (deleteButton) {
                 deleteButton.onclick = function () {
-                    if (confirm('이벤트를 삭제하시겠습니까?')) {
+                    if (confirm('이벤��를 삭제하시겠습니까?')) {
                         event.remove();
                         infoModal.style.display = "none";
                     }
@@ -386,6 +447,7 @@ function initializeCalendar() {
             };
         },
     });
+
 
     calendar.render();
 }
@@ -525,4 +587,31 @@ function getListItem(index, places) {
 
     return el;
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    // 분류 체크박스 필터링
+    const filterCheckboxes = document.querySelectorAll('.event_filter');
+
+    filterCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function () {
+            const selectedCategories = Array.from(filterCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+
+            console.log('Selected Categories:', selectedCategories);
+
+            calendar.getEvents().forEach(event => {
+                const eventCategory = event.extendedProps.calendar; // infoEventCalendar 값 사용
+                console.log('Event Category:', eventCategory);
+
+                if (selectedCategories.length === 0 || selectedCategories.includes(eventCategory)) {
+                    event.setProp('display', 'auto');
+                } else {
+                    event.setProp('display', 'none');
+                }
+            });
+        });
+    });
+});
+
 
