@@ -31,13 +31,6 @@
   <meta name="apple-mobile-web-app-title" content="EWP">
   <link rel="apple-touch-icon" href="assets/img/maskable_icon_x192.png">
 
-  <!-- PWA -->
-  <link rel="manifest" href="assets\manifest.json" />
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="EWP">
-  <link rel="apple-touch-icon" href="assets/img/maskable_icon_x192.png">
-
   <script src="assets/js/userState.js"></script>
   <title>웹 일정 관리 프로젝트</title>
 </head>
@@ -131,18 +124,44 @@
           </ul>
         </li>
 
-        <li class="cd-side__item cd-side__item--has-children cd-side__item--comments js-cd-item--has-children">
-          <a href="#0">분류</a>
-          <!-- 아 아래에 체크박스 식의 분류 카테고리 추가 ex)할 일, 식사, 업무 등등 -->
-          <!-- 체크 박스는 디폴트 상태가 체크상태 체크 상태의 일정이 캘린더에 표시, 체크 안되면 캘린더에 표기 X -->
-          <ul class="cd-side__sub-list">
-            <!-- 드롭박스는 딱히 필요 없을 듯 -->
-            <li class="cd-side__sub-item"><a href="#0">분류 없음</a></li>
-            <li class="cd-side__sub-item"><a href="#0">업무</a></li>
-            <li class="cd-side__sub-item"><a href="#0">여행</a></li>
-            <li class="cd-side__sub-item"><a href="#0">식사</a></li>
-            <li class="cd-side__sub-item"><a href="#0">할일</a></li>
-          </ul>
+        <li
+          class="cd-side__item cd-side__item--has-children cd-side__item--comments js-cd-item--has-children filter-section">
+          <a href="#0">
+            <svg class="filter-icon" viewBox="0 0 24 24" width="16" height="16">
+              <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" />
+            </svg>
+            분류
+          </a>
+          <div class="filter">
+            <div class="event_filter_wrapper all-select">
+              <input id="selectAll" class="event_filter" type="checkbox" checked="true" />
+              <label for="selectAll">모두 선택</label>
+            </div>
+            <div class="event_filter_wrapper">
+              <input id="default" class="event_filter" name="event_filter_sel" type="checkbox" value="분류없음"
+                checked="true" />
+              <label for="default">분류없음</label>
+            </div>
+            <div class="event_filter_wrapper">
+              <input id="business" class="event_filter" name="event_filter_sel" type="checkbox" value="업무"
+                checked="true" />
+              <label for="business">업무</label>
+            </div>
+            <div class="event_filter_wrapper">
+              <input id="travel" class="event_filter" name="event_filter_sel" type="checkbox" value="여행"
+                checked="true" />
+              <label for="travel">여행</label>
+            </div>
+            <div class="event_filter_wrapper">
+              <input id="meal" class="event_filter" name="event_filter_sel" type="checkbox" value="식사" checked="true" />
+              <label for="meal">식사</label>
+            </div>
+            <div class="event_filter_wrapper">
+              <input id="work" class="event_filter" name="event_filter_sel" type="checkbox" value="할일" checked="true" />
+              <label for="work">할일</label>
+            </div>
+          </div>
+
         </li>
       </ul>
     </nav>
