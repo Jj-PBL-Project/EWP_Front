@@ -418,5 +418,27 @@ document.addEventListener('DOMContentLoaded', function () {
   const loginButton = document.querySelector('.login-btn');
   loginButton.addEventListener('click', showLoginModal);
 
+  const selectAllCheckbox = document.getElementById('selectAll');
+  const filterCheckboxes = document.querySelectorAll('.event_filter');
+
+  // 모두 선택 체크박스 변경 시 모든 필터 체크박스 상태 변경
+  selectAllCheckbox.addEventListener('change', function () {
+    filterCheckboxes.forEach(checkbox => {
+      checkbox.checked = selectAllCheckbox.checked;
+    });
+  });
+
+  // 개별 필터 체크박스 변경 시 모두 선택 체크박스 상태 업데이트
+  filterCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', function () {
+      if (!checkbox.checked) {
+        selectAllCheckbox.checked = false;
+      } else {
+        const allChecked = Array.from(filterCheckboxes).every(cb => cb.checked);
+        selectAllCheckbox.checked = allChecked;
+      }
+    });
+  });
+
 });
 
