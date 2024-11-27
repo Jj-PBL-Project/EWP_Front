@@ -32,6 +32,17 @@
         gap: 0.2rem;
     }
 
+    .filter {
+        padding: 10px;
+    }
+
+    .event_filter_wrapper {
+        margin: 6px 0;
+    }
+
+    .event_filter_wrapper label {
+        font-size: 13px;
+    }
 }
 
 /* 더 작은 화면용 추가 조정 */
@@ -74,6 +85,23 @@
         width: auto;
         /* 버튼 너비 자동 조정 */
     }
+
+    .filter {
+        padding: 8px;
+    }
+
+    .event_filter_wrapper {
+        margin: 4px 0;
+    }
+
+    .event_filter_wrapper label {
+        font-size: 12px;
+    }
+
+    .event_filter_wrapper input[type="checkbox"] {
+        width: 14px;
+        height: 14px;
+    }
 }
 
 @media screen and (max-width: 500px) {
@@ -89,4 +117,50 @@
     #loginButton {
         padding-right: 0px;
     }
+}
+
+/* 필터 스타일링 */
+.filter {
+    padding: 15px;
+    /* 필요 시 추가 스타일 */
+}
+
+.event_filter_wrapper {
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    /* 필요 시 추가 스타일 */
+}
+
+/* 모두 선택 구분선 스타일 */
+.event_filter_wrapper.all-select {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+}
+
+.event_filter_wrapper input[type="checkbox"] {
+    margin-right: 10px;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.event_filter_wrapper label {
+    cursor: pointer;
+    font-size: 14px;
+    color: white;
+    /* 텍스트 색상을 흰색으로 변경 */
+}
+
+/* 필터 아이콘 스타일링 */
+.filter-icon {
+    fill: white;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.cd-side__item--has-children.filter-section>a {
+    display: flex;
+    align-items: center;
 }
