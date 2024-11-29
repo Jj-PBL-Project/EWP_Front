@@ -73,6 +73,22 @@ function initializeFilters() {
 let currentEventAttendees = new Set();
 let editEventAttendees = new Set();
 
+// 소켓 연결 설정
+const socket = io("https://ewp.devist.me/", {
+  path: "/api/socket.io",
+  transports: ["websocket"]
+});
+
+// 로그인 시 서버로부터 캘린더 데이터 수신
+socket.on('loginRes', (data) => {
+  if (data.status === 200) { // main.js에 적어둔 if문이랑 동일하게 적었는데 이상하면 수정하시면 됩니다.
+    // 받아온 일정 데이터로 캘린더 업데이트
+    calendar.removeAllEvents(); // 풀캘린더에서 기존 이벤트 모두 삭제하는 함수입니다.
+    calendar.addEventSource(data.events); // 풀캘린더에서 이벤트 소스(db에서 이벤트를 가져온)를 추가하는 함수입니다. https://fullcalendar.io/docs/Calendar-addEventSource
+  }
+});
+
+
 // 캘린더 초기화 함수
 function initializeCalendar() {
     var calendarEl = document.getElementById('calendar');
@@ -130,9 +146,21 @@ function initializeCalendar() {
 
 
 
-            // 모달 닫기 이벤트 핸들러들
+            // 모달 생성 버튼 이벤트 처리
             form.onsubmit = function (e) {
                 e.preventDefault();
+
+                const eventData = { // 일정 데이터 가져와서
+                    title: document.getElementById('eventTitle').value,
+                    start: document.getElementById('eventStart').value,
+                    end: document.getElementById('eventEnd').value,
+                    location: document.getElementById('eventLocation').value,
+                    description: document.getElementById('eventDescription').value,
+                    color: document.getElementById('eventColor').value,
+                    calendar: document.getElementById('eventCalendar').value,
+                    reminder: document.getElementById('eventReminder').value,
+                    attendees: Array.from(currentEventAttendees)
+                };
 
                 calendar.addEvent({
                     title: document.getElementById('eventTitle').value,
@@ -148,13 +176,17 @@ function initializeCalendar() {
                         attendees: Array.from(currentEventAttendees) // Set을 배열로 변환
                     }
                 });
-
-                currentEventAttendees.clear(); // Set 초기화
-                modal.style.display = "none";
-                form.reset();
+                
+                socket.emit('createEvent', eventData);
+                
+                currentEventAttendees.clear(); // 참석자 목록 초기화
+                modal.style.display = "none"; // 모달 닫기
+                form.reset(); // 폼 초기화
             };
 
-            document.querySelector('.btn-cancel').onclick = function () {
+            
+
+            document.querySelector('.btn-cancel').onclick = function () { 
                 modal.style.display = "none";
                 form.reset();
             };
@@ -360,10 +392,23 @@ function initializeCalendar() {
                     editModal.style.display = "block";
 
                     // 수정된 데이터 제출 
-                    const editForm = document.getElementById('editEventForm');
+                    const editForm = document.getElementById('editEventForm'); // 수정 폼
                     if (editForm) {
                         editForm.onsubmit = function (e) {
                             e.preventDefault();
+                            const eventData = { // 수정할 데이터 가져오기
+                                id: currentEvent.id, 
+                                title: document.getElementById('editEventTitle').value,
+                                start: document.getElementById('editEventStart').value,
+                                end: document.getElementById('editEventEnd').value,
+                                location: document.getElementById('editEventLocation').value,
+                                description: document.getElementById('editEventDescription').value,
+                                color: document.getElementById('editEventColor').value,
+                                calendar: document.getElementById('editEventCalendar').value,
+                                reminder: document.getElementById('editEventReminder').value,
+                                attendees: Array.from(currentEventAttendees)
+                            };
+                        
                             event.setProp('title', editEventTitle.value);
                             event.setStart(editEventStart.value);
                             event.setEnd(editEventEnd.value);
@@ -374,6 +419,7 @@ function initializeCalendar() {
                             event.setExtendedProp('attendees', Array.from(editEventAttendees));
                             event.setProp('backgroundColor', editEventColor.value);
 
+                            socket.emit('updateEvent', eventData); // 수정된 데이터 서버로 전송
                             editModal.style.display = "none";
                         };
                     }
@@ -407,8 +453,9 @@ function initializeCalendar() {
             const deleteButton = infoModal.querySelector('.btn-delete');
             if (deleteButton) {
                 deleteButton.onclick = function () {
-                    if (confirm('이벤��를 삭제하시겠습니까?')) {
-                        event.remove();
+                    if (confirm('이벤트를 삭제하시겠습니까?')) {
+                        event.remove(); // 클릭한 이벤트 삭제
+                        socket.emit('eventDelete', { eventId: currentEvent.id }); // 삭제된 이벤트 서버로 전송
                         infoModal.style.display = "none";
                     }
                 };
@@ -613,5 +660,3 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
-
-
