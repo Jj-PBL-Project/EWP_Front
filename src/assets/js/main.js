@@ -158,6 +158,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // 연결 이벤트
   socket.on("connect", () => {
     console.log("서버와 연결되었습니다.");
+    // 소켓 연결시 알림 받아오기 부분
+    socket.emit('소켓알림받는함수'); // 여기 부분은 실제 알림 받아오는 명칭으로 변경하면 됩니다.
   });
 
   // 오류 이벤트
@@ -199,6 +201,79 @@ document.addEventListener('DOMContentLoaded', function () {
       alert(data.message);
     }
   });
+
+  // 서버로부터 알림 목록 수신
+  socket.on('notificationList', (data) => {
+    if (data.status === 200) {
+      window.notifications = data.notifications || [];
+      initializeNotificationCount();
+    }
+  });
+
+  // 새로운 알림 수신
+  socket.on('newNotification', (notification) => {
+    window.notifications.unshift(notification); // 새 알림을 배열 앞에 추가
+    initializeNotificationCount();
+    // 선택적: 새 알림 토스트 메시지 표시
+    showNotificationToast(notification);
+  });
+
+  // 알림 삭제 응답 처리
+  socket.on('notificationDeleted', (data) => {
+    if (data.status === 200) {
+      // 서버에서 삭제 성공 시 UI 업데이트
+      const index = window.notifications.findIndex(n => n.id === data.notificationId);
+      if (index !== -1) {
+        window.notifications.splice(index, 1);
+        initializeNotificationCount();
+      }
+    }
+  });
+
+  // 알림 삭제 함수 수정
+  function deleteNotification(notificationId, index) {
+    // 서버에 삭제 요청
+    socket.emit('deleteNotification', { notificationId });
+    // 낙관적 UI 업데이트
+    window.notifications.splice(index, 1);
+    updateNotifications();
+  }
+
+  /*
+  // 서버에서 보낼 알림의 양식
+  socket.emit('newNotification', {
+    id: "unique-notification-id",
+    message: "30분 후 회의 예정 입니다.", // "남은시간" 후 "이벤트" 예정입니다. 이런식으로 메세지를 보내면 될듯
+    timestamp: "2024-01-01T00:00:00Z",
+    type: "meeting" <- 여기 부분은 알림의 타입이나 타입마다 별도의 이벤트가 없다면 없애도 될듯?
+  });
+  */
+
+  // 알림이 담길 배열
+  window.notifications = [
+    "30분 후 회의 예정입니다.",
+    "1시간 후 점심시간 입니다.",
+    "5시간 후 퇴근시간 입니다.",
+  ];
+
+  // 알림 카운트 초기화 함수
+  function initializeNotificationCount() {
+    const countElement = document.querySelector('.cd-count');
+    if (window.notifications.length > 0) {
+      countElement.style.display = 'inline-flex';
+      countElement.textContent = window.notifications.length;
+    } else {
+      countElement.style.display = 'none';
+    }
+  }
+
+  // 알림 메세지 토스트 부분인데 일단 자리만 만듬
+  function showNotificationToast(notification) {
+    // 토스트 메시지 부분
+  }
+
+  // 페이지 로드 시 알림 카운트 초기화
+  initializeNotificationCount();
 
   // 로그인 모달 표시 함수
   function showLoginModal() {
@@ -440,5 +515,72 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
+  // 알림 모달 처리
+  const notificationTrigger = document.querySelector('.cd-side__item--notifications a');
+
+  function showNotificationModal() {
+    fetch('modal.html')
+      .then(response => response.text())
+      .then(data => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(data, 'text/html');
+        const notificationModal = doc.querySelector('#notificationModal');
+
+        // 기존 모달이 있다면 제거
+        const existingModal = document.querySelector('#notificationModal');
+        if (existingModal) {
+          existingModal.remove();
+        }
+
+        document.body.appendChild(notificationModal);
+        notificationModal.style.display = 'block';
+
+        // 알림 목록 생성 (예시 데이터)
+        const notificationList = notificationModal.querySelector('#notificationList');
+        const countElement = document.querySelector('.cd-count');
+
+        function updateNotifications() {
+          if (window.notifications.length === 0) {
+            notificationList.innerHTML = '<div class="notification-empty">알림이 없습니다</div>';
+            countElement.style.display = 'none';
+          } else {
+            notificationList.innerHTML = window.notifications.map(notification =>
+              `<li class="notification-item">
+                ${notification}
+                <button class="delete-btn">
+                  <img src="assets/img/gal.svg" alt="삭제">
+                </button>
+              </li>`
+            ).join('');
+            countElement.style.display = 'inline-flex';
+            countElement.textContent = window.notifications.length;
+          }
+
+          // 삭제 버튼 이벤트 
+          const deleteButtons = notificationModal.querySelectorAll('.delete-btn');
+          deleteButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+              window.notifications.splice(index, 1);
+              updateNotifications();
+            });
+          });
+        }
+
+        // 초기 알림 목록 표시
+        updateNotifications();
+
+        // 닫기 버튼 이벤트 
+        const closeButton = notificationModal.querySelector('.close-button');
+        closeButton.addEventListener('click', () => {
+          notificationModal.style.display = 'none';
+        });
+      });
+  }
+
+  // 알림 아이콘 클릭 이벤트
+  notificationTrigger.addEventListener('click', function (e) {
+    e.preventDefault();
+    showNotificationModal();
+  });
 });
 
