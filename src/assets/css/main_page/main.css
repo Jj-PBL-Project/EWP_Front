@@ -164,3 +164,16 @@
     display: flex;
     align-items: center;
 }
+
+/* 사이드바 메뉴 그룹 구분 스타일 */
+.cd-side__item--has-children.filter-section {
+    margin-top: 20px;  /* 위쪽 여백 추가 */
+    border-top: 1px solid rgba(255, 255, 255, 0.2);  /* 구분선 추가 */
+    padding-top: 20px;  /* 구분선과의 간격 */
+}
+
+/* 필터 섹션 스타일 조정 */
+.cd-side__item--has-children.filter-section > a {
+    opacity: 0.8;  /* 살짝 투명하게 하여 구분감 추가 */
+}
+
