@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>계정 관리</title>
+  <style>
+    /* 모달 스타일 */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      width: 400px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-content h2 {
+      margin: 0 0 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .modal-buttons button {
+      margin-left: 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .save-btn {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .save-btn:hover {
+      background-color: #218838;
+    }
+
+    .close-btn {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .close-btn:hover {
+      background-color: #c82333;
+    }
+
+    .account-trigger {
+      cursor: pointer;
+      font-size: 18px;
+      color: #333;
+      margin-top: 20px;
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <ul>
+    <!-- 계정 관리 트리거 -->
+    <li class="cd-side__item">
+      <div class="account-trigger">계정 관리</div>
+
+      <!-- 모달 창 -->
+      <div id="accountModal" class="modal">
+        <div class="modal-content">
+          <h2>계정 관리</h2>
+          <form id="accountForm">
+            <div class="form-group">
+              <label for="accountName">이름</label>
+              <input type="text" id="accountName" value="홍길동">
+            </div>
+            <div class="form-group">
+              <label for="accountId">아이디</label>
+              <input type="text" id="accountId" value="user123" disabled>
+            </div>
+            <div class="form-group">
+              <label for="accountPassword">비밀번호</label>
+              <input type="password" id="accountPassword" value="password123">
+            </div>
+            <div class="form-group">
+              <label for="accountIntro">한줄 소개</label>
+              <input type="text" id="accountIntro" value="자기소개를 입력하세요">
+            </div>
+            <div class="modal-buttons">
+              <button type="button" class="close-btn">취소</button>
+              <button type="button" class="save-btn">저장</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </li>
+  </ul>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const accountTrigger = document.querySelector(".account-trigger");
+      const accountModal = document.getElementById("accountModal");
+      const closeBtn = accountModal.querySelector(".close-btn");
+
+      // 모달 열기
+      accountTrigger.addEventListener("click", () => {
+        accountModal.style.display = "block";
+      });
+
+      // 모달 닫기
+      closeBtn.addEventListener("click", () => {
+        accountModal.style.display = "none";
+      });
+
+      // 모달 외부 클릭 시 닫기
+      accountModal.addEventListener("click", (event) => {
+        if (event.target === accountModal) {
+          accountModal.style.display = "none";
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
+
