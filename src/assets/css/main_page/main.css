@@ -177,3 +177,54 @@
     opacity: 0.8;  /* 살짝 투명하게 하여 구분감 추가 */
 }
 
+#eventList {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+}
+
+#backToCalendarButton {
+    background-color: #7BA1FF;
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+#backToCalendarButton:hover {
+    background-color: #5A7FDE;
+}
+
+#eventListContent {
+    max-height: 400px;
+    overflow-y: auto;
+}
+.event-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+.event-date {
+    font-size: small;
+    font-weight: bold;
+    color: #7BA1FF;
+    margin-bottom: 5px;
+}
+
+.event-description {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.no-results {
+    text-align: center;
+    font-weight: bold;
+}
