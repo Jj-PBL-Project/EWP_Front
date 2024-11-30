@@ -99,31 +99,36 @@
   }
 }());
 
-// 로그인, 로그아웃 테스트 영역(정식 릴리즈 시 삭제)
-const userState = new UserState();
-
-// document.querySelector('.login-btn').addEventListener('click', () => {
-// 테스트용 사용자 데이터
-// userState.login({
-//   name: '홍길동',
-//   id: '#HONG',
-//   bio: '안녕하세요.',
-//   profileImage: 'assets/img/default-profile.png'
-// });
-// });
-
-document.querySelector('.cd-nav__sub-list').addEventListener('click', (e) => {
-  if (e.target.textContent === '로그아웃') {
-    e.preventDefault();
-    userState.logout();
-  }
-});
-// 로그인, 로그아웃 테스트 영역
-
-
-
-// 로그인, 회원가입 모달 표시 함수입니당.
 document.addEventListener('DOMContentLoaded', function () {
+  const userState = new UserState();
+
+  // 로그인, 로그아웃 테스트 영역(정식 릴리즈 시 삭제)
+
+  // document.querySelector('.login-btn').addEventListener('click', () => {
+  // 테스트용 사용자 데이터
+  // userState.login({
+  //   name: '홍길동',
+  //   id: '#HONG',
+  //   bio: '안녕하세요.',
+  //   profileImage: 'assets/img/default-profile.png'
+  // });
+  // });
+  document.querySelector('.cd-nav__sub-list').addEventListener('click', (e) => {
+    if (e.target.textContent === '계정 관리') { // 수정된 부분
+      e.preventDefault();
+      userState.editUserData();
+    }
+  });
+
+  document.querySelector('.cd-nav__sub-list').addEventListener('click', (e) => {
+    if (e.target.textContent === '로그아웃') {
+      e.preventDefault();
+      userState.logout();
+    }
+  });
+  // 로그인, 로그아웃 테스트 영역
+
+  // 로그인, 회원가입 모달 표시 함수입니당.
   // 모든 모달 창을 닫는 함수
   function closeAllModals() {
     const modals = document.querySelectorAll('.modal');
@@ -135,12 +140,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   };
 
-
   /**
    * 작성자 : 성민우
    * 작성일 : 2024-11-20
    */
-
 
   // 호스트 설정
   const host = {
@@ -188,24 +191,42 @@ document.addEventListener('DOMContentLoaded', function () {
   // 로그인 이벤트
   socket.on('loginRes', (data) => {
     if (data.status == 200) {
-      const { userName, userBirthday, userTag, userBio, userProfileImgUrl } = data.data;
+      const { userName, userBirthday, userTag, userBio, userProfileImgUrl, userAlarm } = data.data;
+
+      // 테스트용 알람 데이터
+      const TestUserAlarm = [
+        "30분 후 회의 예정입니다.",
+        "1시간 후 점심시간 입니다.",
+        "5시간 후 퇴근시간 입니다.",
+      ];
 
       userState.login({
         name: userName,
         id: userTag,
         bio: userBio,
-        profileImage: userProfileImgUrl ?? 'assets/img/default-profile.png'
+        profileImage: userProfileImgUrl ?? 'assets/img/default-profile.svg',
+        userAlarm: TestUserAlarm // userAlarm 데이터로 변경하면 됩니다.
       });
       closeAllModals();
+
+      // 로그인 후 알림 데이터 요청
+      socket.emit('getNotifications');
     } else {
       alert(data.message);
     }
   });
 
+
   // 서버로부터 알림 목록 수신
   socket.on('notificationList', (data) => {
     if (data.status === 200) {
-      window.notifications = data.notifications || [];
+      window.notifications = data.notifications || [
+        "새로운 프로젝트가 할당되었습니다.",
+        "회의 일정이 업데이트되었습니다.",
+        "업무 보고서 제출 기한이 다가옵니다."
+      ]; // 테스트용 알림 데이터 추가
+      // 로컬 스토리지에 저장
+      localStorage.setItem('notifications', JSON.stringify(window.notifications));
       initializeNotificationCount();
     }
   });
@@ -213,6 +234,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // 새로운 알림 수신
   socket.on('newNotification', (notification) => {
     window.notifications.unshift(notification); // 새 알림을 배열 앞에 추가
+    // 로컬 스토리지에 저장
+    localStorage.setItem('notifications', JSON.stringify(window.notifications));
     initializeNotificationCount();
     // 선택적: 새 알림 토스트 메시지 표시
     showNotificationToast(notification);
@@ -225,17 +248,21 @@ document.addEventListener('DOMContentLoaded', function () {
       const index = window.notifications.findIndex(n => n.id === data.notificationId);
       if (index !== -1) {
         window.notifications.splice(index, 1);
+        // 로컬 스토리지에 저장
+        localStorage.setItem('notifications', JSON.stringify(window.notifications));
         initializeNotificationCount();
       }
     }
   });
 
   // 알림 삭제 함수 수정
-  function deleteNotification(notificationId, index) {
+  function deleteNotification(index) {
     // 서버에 삭제 요청
     socket.emit('deleteNotification', { notificationId });
     // 낙관적 UI 업데이트
     window.notifications.splice(index, 1);
+    // 로컬 스토리지에 저장
+    localStorage.setItem('notifications', JSON.stringify(window.notifications));
     updateNotifications();
   }
 
@@ -249,31 +276,10 @@ document.addEventListener('DOMContentLoaded', function () {
   });
   */
 
-  // 알림이 담길 배열
-  window.notifications = [
-    "30분 후 회의 예정입니다.",
-    "1시간 후 점심시간 입니다.",
-    "5시간 후 퇴근시간 입니다.",
-  ];
-
-  // 알림 카운트 초기화 함수
-  function initializeNotificationCount() {
-    const countElement = document.querySelector('.cd-count');
-    if (window.notifications.length > 0) {
-      countElement.style.display = 'inline-flex';
-      countElement.textContent = window.notifications.length;
-    } else {
-      countElement.style.display = 'none';
-    }
-  }
-
   // 알림 메세지 토스트 부분인데 일단 자리만 만듬
   function showNotificationToast(notification) {
     // 토스트 메시지 부분
   }
-
-  // 페이지 로드 시 알림 카운트 초기화
-  initializeNotificationCount();
 
   // 로그인 모달 표시 함수
   function showLoginModal() {
@@ -540,11 +546,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const countElement = document.querySelector('.cd-count');
 
         function updateNotifications() {
-          if (window.notifications.length === 0) {
+          const notifications = window.notifications ?? [];
+          if (notifications.length === 0) {
             notificationList.innerHTML = '<div class="notification-empty">알림이 없습니다</div>';
             countElement.style.display = 'none';
           } else {
-            notificationList.innerHTML = window.notifications.map(notification =>
+            notificationList.innerHTML = notifications.map(notification =>
               `<li class="notification-item">
                 ${notification}
                 <button class="delete-btn">
@@ -553,14 +560,18 @@ document.addEventListener('DOMContentLoaded', function () {
               </li>`
             ).join('');
             countElement.style.display = 'inline-flex';
-            countElement.textContent = window.notifications.length;
+            countElement.textContent = notifications.length;
           }
 
           // 삭제 버튼 이벤트 
           const deleteButtons = notificationModal.querySelectorAll('.delete-btn');
           deleteButtons.forEach((button, index) => {
             button.addEventListener('click', () => {
+              // 서버에 삭제 요청 생략
+
+              // 즉시 삭제 처리
               window.notifications.splice(index, 1);
+              localStorage.setItem('notifications', JSON.stringify(window.notifications));
               updateNotifications();
             });
           });
@@ -582,5 +593,10 @@ document.addEventListener('DOMContentLoaded', function () {
     e.preventDefault();
     showNotificationModal();
   });
+
+  // 초기화 후 로그인 상태 확인 및 알림 데이터 요청
+  if (userState.isLoggedIn) {
+    socket.emit('getNotifications');
+  }
 });
 
