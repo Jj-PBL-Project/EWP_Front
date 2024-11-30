@@ -21,6 +21,11 @@
     border-radius: 8px;
     max-height: 90vh;
     overflow-y: auto;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    /* 모달의 패딩과 그림자 강화 */
 }
 
 #eventInfoModal .modal-content {
@@ -69,6 +74,9 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 15px;
+    /* 헤더 구분선과 패딩 조정 */
 }
 
 /* 닫기 버튼 스타일 수정 */
@@ -110,6 +118,14 @@
     border-radius: 8px;
     font-size: 15px;
     transition: border-color 0.3s;
+}
+
+/* 입력칸 포커스 스타일 추가 */
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #7BA1FF !important;
+    outline: none;
 }
 
 .map-container {
@@ -773,4 +789,141 @@
     }
 }
 
+/* 계정 관리 모달 스타일 */
+#accountModal .modal-content {
+  max-width: 500px;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+#accountModal h2 {
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 1.5em;
+  text-align: left;
+  font-weight: bold;
+  
+}
+
+#accountModal .form-group {
+  margin-bottom: 15px;
+}
+
+#accountModal label {
+  display: block;
+  margin-bottom: 5px;
+  color: #666;
+  font-size: 0.9em;
+}
+
+#accountModal input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 1em;
+}
+
+#accountModal input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+#accountModal .modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+#accountModal .close-btn,
+#accountModal .save-btn {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.3s;
+}
+
+#accountModal .close-btn {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+#accountModal .save-btn {
+  background-color: #7BA1FF;
+  color: white;
+}
+
+#accountModal .close-btn:hover {
+  background-color: #d0d0d0;
+}
+
+#accountModal .save-btn:hover {
+  background-color: #6990FF;
+}
+
+#accountModal .profile-upload-section {
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative;
+  display: inline-block;
+}
+
+#accountModal .profile-image-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+#accountModal #previewImage {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #7BA1FF;
+  padding: 3px;
+  transition: transform 0.3s ease;
+}
+
+#accountModal .upload-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 2px solid #7BA1FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+  color: #7BA1FF;
+}
+
+#accountModal .upload-btn:hover {
+  background-color: #7BA1FF;
+  color: white;
+  transform: rotate(45deg);
+}
+
+#accountModal .upload-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.modal-buttons button {
+    background-color: #7BA1FF;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.modal-buttons button:hover {
+    background-color: #357ab8;
+}
 
