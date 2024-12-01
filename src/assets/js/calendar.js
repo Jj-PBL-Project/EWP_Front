@@ -160,8 +160,10 @@ function initializeCalendar() {
             if (isUserLoggedIn()) { // 이 함수는 userState.js에서 구현 필요
                 socket.emit('scheduleHandlers', {
                     type: 'readMonth',
+                    data: {
                     startDate: start,
                     endDate: end
+                    }
                 });
             }
             calendar.render(); // 캘린더 렌더링
