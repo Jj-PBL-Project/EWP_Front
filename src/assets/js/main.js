@@ -193,19 +193,12 @@ document.addEventListener('DOMContentLoaded', function () {
     if (data.status == 200) {
       const { userName, userBirthday, userTag, userBio, userProfileImgUrl, userAlarm } = data.data;
 
-      // 테스트용 알람 데이터
-      const TestUserAlarm = [
-        "30분 후 회의 예정입니다.",
-        "1시간 후 점심시간 입니다.",
-        "5시간 후 퇴근시간 입니다.",
-      ];
-
       userState.login({
         name: userName,
         id: userTag,
         bio: userBio,
         profileImage: userProfileImgUrl ?? 'assets/img/default-profile.svg',
-        userAlarm: TestUserAlarm // userAlarm 데이터로 변경하면 됩니다.
+        userAlarm: userAlarm // userAlarm 데이터로 변경하면 됩니다.
       });
       closeAllModals();
 
@@ -553,8 +546,8 @@ document.addEventListener('DOMContentLoaded', function () {
           } else {
             notificationList.innerHTML = notifications.map(notification =>
               `<li class="notification-item">
-                ${notification}
-                <button class="delete-btn">
+                ${notification.content}
+                <button class="delete-btn" id="${notification.UUID}">
                   <img src="assets/img/gal.svg" alt="삭제">
                 </button>
               </li>`
@@ -568,7 +561,7 @@ document.addEventListener('DOMContentLoaded', function () {
           deleteButtons.forEach((button, index) => {
             button.addEventListener('click', () => {
               // 서버에 삭제 요청 생략
-
+              socket.emit('alarmHandlers', { type: 'deleteAlarm', deleteId: button.id });
               // 즉시 삭제 처리
               window.notifications.splice(index, 1);
               localStorage.setItem('notifications', JSON.stringify(window.notifications));
