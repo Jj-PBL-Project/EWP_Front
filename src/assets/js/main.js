@@ -17,7 +17,7 @@ socket = io(host.protocal + "://" + host.addr + "/", {
 });
 
 window.socket = socket;
-  
+
 export default socket;
 
 (function () {
@@ -196,27 +196,27 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log("Received 'checkUserIdRes' event:", data);
     const signupModal = document.querySelector('#signupModal');
     if (signupModal) {
-        const idCheckMessage = signupModal.querySelector('#idCheckMessage');
-        if (data.status === 200) {
-            // 사용 가능한 아이디인 경우
-            alert("사용 가능한 아이디입니다.");
-            idCheckMessage.style.color = 'green';
-            idCheckMessage.textContent = data.message;
-            isIdAvailable = true; 
-        } else if (data.status === 401) {
-            // 이미 사용 중인 아이디인 경우
-            alert("이미 사용 중인 아이디입니다.");
-            idCheckMessage.style.color = 'red';
-            idCheckMessage.textContent = data.message;
-            isIdAvailable = false;
-        } else {
-            alert(data.message);
-            idCheckMessage.style.color = 'red';
-            idCheckMessage.textContent = data.message;
-            isIdAvailable = false;
-        }
+      const idCheckMessage = signupModal.querySelector('#idCheckMessage');
+      if (data.status === 200) {
+        // 사용 가능한 아이디인 경우
+        alert("사용 가능한 아이디입니다.");
+        idCheckMessage.style.color = 'green';
+        idCheckMessage.textContent = data.message;
+        isIdAvailable = true;
+      } else if (data.status === 401) {
+        // 이미 사용 중인 아이디인 경우
+        alert("이미 사용 중인 아이디입니다.");
+        idCheckMessage.style.color = 'red';
+        idCheckMessage.textContent = data.message;
+        isIdAvailable = false;
+      } else {
+        alert(data.message);
+        idCheckMessage.style.color = 'red';
+        idCheckMessage.textContent = data.message;
+        isIdAvailable = false;
+      }
     } else if (!signupModal) {
-        alert('아이디 중복확인 실패');
+      alert('아이디 중복확인 실패');
     }
   });
 
@@ -329,13 +329,13 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         });
       }
-      
+
       // localStorage 업데이트
       localStorage.setItem('notifications', JSON.stringify(window.notifications));
     } else {
       console.error('알림 생성 실패:', data.message);
     }
-    });
+  });
 
   // 로그인 모달 표시 함수
   function showLoginModal() {
@@ -609,35 +609,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
         function updateNotifications() {
           const notifications = window.notifications ?? [];
-          const notificationList = document.querySelector('#notificationList');
+          notificationList = document.querySelector('#notificationList');
           const countElement = document.querySelector('.cd-count');
-        
+
           if (notifications.length === 0) {
             notificationList.innerHTML = '<div class="notification-empty">알림이 없습니다</div>';
             countElement.style.display = 'none';
           } else {
-            notificationList.innerHTML = notifications.map(notification => {
-              if (notification.type === 'invitation') {
+            notificationList.innerHTML = '';
+            notifications.map(notification => {
+              if (notification.alarmType === 'invite') {
+                socket.emit("alarmHandlers", { type: "getAlarmInvite", data: { alarmId: notification.UUID } });
                 // 초대 알림 템플릿
-                return `
-                  <li class="notification-item invitation-item">
-                    <div class="notification-content">
-                      <h4>일정 초대</h4>
-                      <p class="event-title">${notification.eventTitle}</p>
-                      <p class="event-time">${notification.eventDateTime}</p>
-                      <p class="event-host">주최자: ${notification.hostName}</p>
-                      <div class="invitation-buttons">
-                        <button class="accept-btn" data-id="${notification.UUID}">수락</button>
-                        <button class="decline-btn" data-id="${notification.UUID}">거절</button>
-                      </div>
-                    </div>
-                    <button class="delete-btn" id="${notification.UUID}">
-                      <img src="assets/img/gal.svg" alt="삭제">
-                    </button>
-                  </li>`;
               } else {
                 // 일반 알림 템플릿
-                return `
+                notificationList.innerHTML += `
                   <li class="notification-item">
                     <div class="notification-content">
                       <p>${notification.content}</p>
@@ -649,11 +635,11 @@ document.addEventListener('DOMContentLoaded', function () {
                   </li>`;
               }
             }).join('');
-        
+
             countElement.style.display = 'inline-flex';
             countElement.textContent = notifications.length;
           }
-        
+
           // 삭제 버튼 이벤트 리스너
           const deleteButtons = document.querySelectorAll('.delete-btn');
           deleteButtons.forEach((button, index) => {
@@ -664,34 +650,8 @@ document.addEventListener('DOMContentLoaded', function () {
               updateNotifications();
             });
           });
-        
-          // 초대 수락/거절 버튼 이벤트 리스너
-          const acceptButtons = document.querySelectorAll('.accept-btn');
-          const declineButtons = document.querySelectorAll('.decline-btn');
-        
-          acceptButtons.forEach(button => {
-            button.addEventListener('click', () => {
-              const invitationId = button.dataset.id;
-              socket.emit('alarmHandlers', { 
-                type: 'responseInvitation', 
-                invitationId: invitationId, 
-                response: 'accept' 
-              });
-            });
-          });
-        
-          declineButtons.forEach(button => {
-            button.addEventListener('click', () => {
-              const invitationId = button.dataset.id;
-              socket.emit('alarmHandlers', { 
-                type: 'responseInvitation', 
-                invitationId: invitationId, 
-                response: 'decline' 
-              });
-            });
-          });
         }
-        
+
 
         // 초기 알림 목록 표시
         updateNotifications();
@@ -715,7 +675,7 @@ document.addEventListener('DOMContentLoaded', function () {
     socket.emit('getNotifications');
   }
 
-  
+
 });
 
 
