@@ -622,7 +622,7 @@ function addAttendeeToList(value, listElement, attendeesSet) {
         <button type="button" class="remove-attendee">&times;</button>
     `;
 
-    attendeeItem.querySelector('.remove-attendee').addEventListener('click', () => {
+    attendeeItem.querySelector('.remove-attendee').addEventListener('click', function () {
         attendeesSet.delete(value);
         attendeeItem.remove();
     });
@@ -633,34 +633,54 @@ function addAttendeeToList(value, listElement, attendeesSet) {
 // 참석자 추가 버튼 클릭 이벤트 처리 (이벤트 위임 사용)
 document.addEventListener('click', (e) => {
     if (e.target.matches('#eventModal .id-check-btn')) {
-        handleAttendeeAddition('event');
-    } else if (e.target.matches('#editEventModal .id-check-btn')) {
-        handleAttendeeAddition('editEvent');
+        const input = document.getElementById('eventAttendees');
+        const list = document.getElementById('attendeesList');
+        const value = input.value.trim();
+
+        if (!value) return;
+
+        // #이 없으면 자동으로 추가
+        const attendeeId = value.startsWith('#') ? value : '#' + value;
+
+        if (currentEventAttendees.has(attendeeId)) {
+            alert('이미 추가된 참석자입니다.');
+            return;
+        }
+
+        // 이 부분에 소켓 통신 추가
+        // 소켓 통신으로 사용자가 존재하는지 확인하고, 존재하면 참석자 추가
+        // 존재하지 않으면 alert으로 사용자가 없다고 알림
+
+        // 입력된 사용자의 아이디를 리스트로 추가
+        currentEventAttendees.add(attendeeId);
+        addAttendeeToList(attendeeId, list, currentEventAttendees);
+        input.value = '';
+    }
+    // 일정 수정 참석자 추가
+    else if (e.target.matches('#editEventModal .id-check-btn')) {
+        const input = document.getElementById('editEventAttendees');
+        const list = document.getElementById('editAttendeesList');
+        const value = input.value.trim();
+
+        if (!value) return;
+
+        const attendeeId = value.startsWith('#') ? value : '#' + value;
+
+        if (editEventAttendees.has(attendeeId)) {
+            alert('이미 추가된 참석자입니다.');
+            return;
+        }
+
+        // 이 부분에 소켓 통신 추가
+        // 소켓 통신으로 사용자가 존재하는지 확인하고, 존재하면 참석자 추가
+        // 존재하지 않으면 alert으로 사용자가 없다고 알림
+
+        // 입력된 사용자의 아이디를 리스트로 추가
+        editEventAttendees.add(attendeeId);
+        addAttendeeToList(attendeeId, list, editEventAttendees);
+        input.value = '';
     }
 });
-
-// 참석자 추가 처리 함수
-function handleAttendeeAddition(prefix) {
-    const input = document.getElementById(`${prefix}Attendees`);
-    const list = document.getElementById(`${prefix}AttendeesList`);
-    const attendeesSet = prefix === 'event' ? currentEventAttendees : editEventAttendees;
-    const value = input.value.trim();
-
-    if (!value) return;
-
-    const attendeeId = value.startsWith('#') ? value : '#' + value;
-
-    if (attendeesSet.has(attendeeId)) {
-        alert('이미 추가된 참석자입니다.');
-        return;
-    }
-
-    // 여기에서 소켓 통신을 통해 사용자 존재 여부 확인 가능
-
-    attendeesSet.add(attendeeId);
-    addAttendeeToList(attendeeId, list, attendeesSet);
-    input.value = '';
-}
 
 // ========================== 장소 검색 관련 함수 ==========================
 
