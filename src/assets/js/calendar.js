@@ -50,6 +50,13 @@ socket.on('createScheduleRes', (response) => {
 socket.on('updateScheduleRes', (response) => {
     if (response.status === 200) {
         console.log('일정 수정 성공:', response.data);
+        socket.emit('scheduleHandlers', {
+            type: 'readMonth',
+            data: {
+                startDate: window.pageDate.start,
+                endDate: window.pageDate.end
+            }
+        });
     } else {
         console.error('일정 수정 실패:', response.message);
     }
