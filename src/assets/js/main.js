@@ -142,6 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (e.target.textContent === '로그아웃') {
       e.preventDefault();
       userState.logout();
+      window.location.reload();
     }
   });
   // 로그인, 로그아웃 테스트 영역
