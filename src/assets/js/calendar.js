@@ -13,7 +13,7 @@ socket.on('readMonthScheduleRes', (response) => {
       // 받은 일정 데이터를 캘린더에 추가
       response.data.forEach(schedule => {
         calendar.addEvent({
-          id: schedule._id, // 서버에서 받은 고유 ID 사용
+                id: schedule.UUID, // 서버에서 받은 고유 ID 사용
           title: schedule.scdTitle,
           start: schedule.startDate,
           end: schedule.endDate,
