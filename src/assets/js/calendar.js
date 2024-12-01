@@ -10,33 +10,33 @@ window.pageDate = {
 
 socket.on('readMonthScheduleRes', (response) => {
     if (response.status === 200) {
-      // 기존 일정 제거 
-      calendar.removeAllEvents();
+        // 기존 일정 제거 
+        calendar.removeAllEvents();
 
-      // 받은 일정 데이터를 캘린더에 추가
-      response.data.forEach(schedule => {
-        calendar.addEvent({
+        // 받은 일정 데이터를 캘린더에 추가
+        response.data.forEach(schedule => {
+            calendar.addEvent({
                 id: schedule.UUID, // 서버에서 받은 고유 ID 사용
-          title: schedule.scdTitle,
-          start: schedule.startDate,
-          end: schedule.endDate,
-          location: schedule.scdLocation,
-          description: schedule.scdContent,
-          color: schedule.color,
-          display: 'block',
-          extendedProps: {
-            calendar: schedule.calendarName,
-            reminder: schedule.scdAlarm,
-            attendees: schedule.tag     
-          }
+                title: schedule.scdTitle,
+                start: schedule.startDate,
+                end: schedule.endDate,
+                location: schedule.scdLocation,
+                description: schedule.scdContent,
+                color: schedule.color,
+                display: 'block',
+                extendedProps: {
+                    calendar: schedule.calendarName,
+                    reminder: schedule.scdAlarm,
+                    attendees: schedule.tag
+                }
+            });
         });
-      });
-      console.log('일정 조회 성공:', response.data);
+        console.log('일정 조회 성공:', response.data);
         calendar.render();
     } else {
-      console.error('일정 조회 실패:', response.message);
+        console.error('일정 조회 실패:', response.message);
     }
-  });
+});
 
 // 일정 추가 응답 이벤트 리스너
 socket.on('createScheduleRes', (response) => {
@@ -46,7 +46,7 @@ socket.on('createScheduleRes', (response) => {
         console.error('일정 추가 실패:', response.message);
     }
 });
- // 일정 수정 응답 이벤트 리스너
+// 일정 수정 응답 이벤트 리스너
 socket.on('updateScheduleRes', (response) => {
     if (response.status === 200) {
         console.log('일정 수정 성공:', response.data);
@@ -155,14 +155,14 @@ function initializeCalendar() {
 
             window.pageDate.start = start;
             window.pageDate.end = end;
-            
+
             // 로그인 상태일 때만 일정 요청
             if (isUserLoggedIn()) { // 이 함수는 userState.js에서 구현 필요
                 socket.emit('scheduleHandlers', {
                     type: 'readMonth',
                     data: {
-                    startDate: start,
-                    endDate: end
+                        startDate: start,
+                        endDate: end
                     }
                 });
             }
@@ -762,12 +762,9 @@ document.addEventListener('click', (e) => {
         const list = document.getElementById('attendeesList');
         const value = input.value.trim();
 
-        if (!value) return;
+        if (!value || !value.includes('#')) return;
 
-        // #이 없으면 자동으로 추가
-        const attendeeId = value.startsWith('#') ? value : '#' + value;
-
-        if (currentEventAttendees.has(attendeeId)) {
+        if (currentEventAttendees.has(value)) {
             alert('이미 추가된 참석자입니다.');
             return;
         }
@@ -777,8 +774,8 @@ document.addEventListener('click', (e) => {
         // 존재하지 않으면 alert으로 사용자가 없다고 알림
 
         // 입력된 사용자의 아이디를 리스트로 추가
-        currentEventAttendees.add(attendeeId);
-        addAttendeeToList(attendeeId, list, currentEventAttendees);
+        currentEventAttendees.add(value);
+        addAttendeeToList(value, list, currentEventAttendees);
         input.value = '';
     }
     // 일정 수정 참석자 추가
@@ -787,11 +784,9 @@ document.addEventListener('click', (e) => {
         const list = document.getElementById('editAttendeesList');
         const value = input.value.trim();
 
-        if (!value) return;
+        if (!value || !value.includes('#')) return;
 
-        const attendeeId = value.startsWith('#') ? value : '#' + value;
-
-        if (editEventAttendees.has(attendeeId)) {
+        if (editEventAttendees.has(value)) {
             alert('이미 추가된 참석자입니다.');
             return;
         }
@@ -801,8 +796,8 @@ document.addEventListener('click', (e) => {
         // 존재하지 않으면 alert으로 사용자가 없다고 알림
 
         // 입력된 사용자의 아이디를 리스트로 추가
-        editEventAttendees.add(attendeeId);
-        addAttendeeToList(attendeeId, list, editEventAttendees);
+        editEventAttendees.add(value);
+        addAttendeeToList(value, list, editEventAttendees);
         input.value = '';
     }
 });
