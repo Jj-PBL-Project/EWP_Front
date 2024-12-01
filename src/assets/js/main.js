@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // 연결 이벤트
   socket.on("connect", () => {
-    console.log("서버와 연결되었습니다.");
+    console.log("서버와 연결되었습니다.(main.js");
     // 소켓 연결시 알림 받아오기 부분
     socket.emit('소켓알림받는함수'); // 여기 부분은 실제 알림 받아오는 명칭으로 변경하면 됩니다.
   });
@@ -170,23 +170,48 @@ document.addEventListener('DOMContentLoaded', function () {
     console.error("Connection error:", err);
   });
 
-  // 회원가입 이벤트
+  // 회원가입 이벤트 처리
   socket.on('signUpRes', (data) => {
     if (data.status == 200) {
-      // 회원가입이 성공한 경우 이벤트
+      // 회원가입이 성공한 경우
+      alert('회원가입이 완료되었습니다. 로그인 해주세요.');
+      closeAllModals();
+      showLoginModal();
     } else {
-      // 회원가입이 실패한 경우 이벤트
+      // 회원가입이 실패한 경우
+      alert(`회원가입 실패: ${data.message}`);
     }
   });
 
-  // 중복 아이디 확인 이벤트
+  // 아이디 중복확인 응답 처리
   socket.on('checkUserIdRes', (data) => {
-    if (data.status == 200) {
-      // 사용 가능한 아이디 일 경우 이벤트
-    } else {
-      // 사용이 불가능한 아이디 일 경우 이벤트
+    console.log("Received 'checkUserIdRes' event:", data);
+    const signupModal = document.querySelector('#signupModal');
+    if (signupModal) {
+        const idCheckMessage = signupModal.querySelector('#idCheckMessage');
+        if (data.status === 200) {
+            // 사용 가능한 아이디인 경우
+            alert("사용 가능한 아이디입니다.");
+            idCheckMessage.style.color = 'green';
+            idCheckMessage.textContent = data.message;
+            isIdAvailable = true; 
+        } else if (data.status === 401) {
+            // 이미 사용 중인 아이디인 경우
+            alert("이미 사용 중인 아이디입니다.");
+            idCheckMessage.style.color = 'red';
+            idCheckMessage.textContent = data.message;
+            isIdAvailable = false;
+        } else {
+            alert(data.message);
+            idCheckMessage.style.color = 'red';
+            idCheckMessage.textContent = data.message;
+            isIdAvailable = false;
+        }
+    } else if(!signupModal){
+        alert('아이디 중복확인 실패');
     }
   });
+
 
   // 로그인 이벤트
   socket.on('loginRes', (data) => {
@@ -403,11 +428,15 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         });
 
+        // 아이디 중복확인 여부
+        let isIdAvailable = false;
+
         // 아이디 중복확인 버튼 이벤트 리스너
         const idCheckButton = signupModal.querySelector('.id-check-btn');
         idCheckButton.addEventListener('click', function (e) {
           e.preventDefault();
           const userId = elInputUsername.value;
+          alert('버튼 이벤트 동작 확인 용도: ' + userId);
 
           // 아이디 형식 검사
           if (!idLength(userId) || !onlyNumberAndEnglish(userId)) {
@@ -416,8 +445,9 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
           }
 
-          // ***여기에 중복확인 로직 작성하시면 됩니다.***
-          socket.emit("checkUserIdRes", { userId });
+          isIdAvailable = true;
+
+          socket.emit("checkUserId ", { userId });
         });
 
         // 닫기 버튼 이벤트 리스너
@@ -447,6 +477,11 @@ document.addEventListener('DOMContentLoaded', function () {
           if (!idLength(userId) || !onlyNumberAndEnglish(userId)) {
             alert('아이디는 4~12글자의 영문자와 숫자만 사용 가능합니다.');
             elInputUsername.focus();
+            return;
+          }
+
+          if (!isIdAvailable) {
+            alert('아이디 중복 확인을 해주세요.');
             return;
           }
 
