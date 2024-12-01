@@ -2,7 +2,10 @@
 let calendar; // 캘린더 인스턴스 전역 변수
 let currentEventAttendees = new Set(); // 현재 이벤트 참석자 집합
 let editEventAttendees = new Set(); // 이벤트 수정 시 참석자 집합
-
+window.pageDate = {
+    start: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+    end: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
+};
 // ========================== 소켓 연결 및 이벤트 리스너  ==========================
 
 socket.on('readMonthScheduleRes', (response) => {
@@ -29,6 +32,7 @@ socket.on('readMonthScheduleRes', (response) => {
         });
       });
       console.log('일정 조회 성공:', response.data);
+        calendar.render();
     } else {
       console.error('일정 조회 실패:', response.message);
     }
@@ -141,6 +145,9 @@ function initializeCalendar() {
             // 월이 변경될 때마다 해당 월의 일정 요청
             const start = info.start;
             const end = info.end;
+
+            window.pageDate.start = start;
+            window.pageDate.end = end;
             
             // 로그인 상태일 때만 일정 요청
             if (isUserLoggedIn()) { // 이 함수는 userState.js에서 구현 필요
@@ -150,6 +157,7 @@ function initializeCalendar() {
                     endDate: end
                 });
             }
+            calendar.render(); // 캘린더 렌더링
         }
     });
     calendar.render(); // 캘린더 렌더링
