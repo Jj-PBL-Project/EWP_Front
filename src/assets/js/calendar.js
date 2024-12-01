@@ -1,13 +1,82 @@
 // ========================== 전역 변수 선언 ==========================
-
 let calendar; // 캘린더 인스턴스 전역 변수
 let currentEventAttendees = new Set(); // 현재 이벤트 참석자 집합
 let editEventAttendees = new Set(); // 이벤트 수정 시 참석자 집합
 
-// 소켓 연결 설정
-const socket = io("https://ewp.devist.me/", {
-  path: "/api/socket.io",
-  transports: ["websocket"]
+// ========================== 소켓 연결 및 이벤트 리스너  ==========================
+
+socket.on('readMonthScheduleRes', (response) => {
+    if (response.status === 200) {
+      console.log('일정 조회 성공:', response.data);
+      // 기존 일정 제거 
+      calendar.removeAllEvents();
+
+      // 받은 일정 데이터를 캘린더에 추가
+      response.data.forEach(schedule => {
+        calendar.addEvent({
+          id: schedule._id, // 서버에서 받은 고유 ID 사용
+          title: schedule.scdTitle,
+          start: schedule.startDate,
+          end: schedule.endDate,
+          location: schedule.scdLocation,
+          description: schedule.scdContent,
+          color: schedule.color,
+          display: 'block',
+          extendedProps: {
+            calendar: schedule.calendarName,
+            reminder: schedule.scdAlarm,
+            attendees: schedule.tag     
+          }
+        });
+      });
+      console.log('일정 조회 성공:', response.data);
+    } else {
+      console.error('일정 조회 실패:', response.message);
+    }
+  });
+
+// 일정 추가 응답 이벤트 리스너
+socket.on('createScheduleRes', (response) => {
+    if (response.status === 201) {
+        console.log('일정 추가 성공:', response.data);
+    } else {
+        console.error('일정 추가 실패:', response.message);
+    }
+});
+ // 일정 수정 응답 이벤트 리스너
+socket.on('updateScheduleRes', (response) => {
+    if (response.status === 200) {
+        console.log('일정 수정 성공:', response.data);
+    } else {
+        console.error('일정 수정 실패:', response.message);
+    }
+});
+
+// 일정 삭제 응답 이벤트 리스너
+socket.on('deleteScheduleRes', (response) => {
+    if (response.status === 200) {
+        console.log('일정 삭제 성공:', response.data);
+    } else if (response.status === 404) {
+        console.error('일정 삭제 실패:', response.message);
+    } else {
+        console.error('일정 삭제 실패:', response.message);
+    }
+});
+
+//  오류 응답 이벤트 리스너
+socket.on('scheduleRes', (response) => {
+    if (response.status === 400) {
+        console.log('오류',response.data);
+    }
+});
+
+// 일정 검색 응답 이벤트 리스너
+socket.on('searchScheduleRes', (response) => {
+    if (response.status === 200) {
+        console.log(response.data);
+    } else {
+        console.error(response.data);
+    }
 });
 
 // ========================== DOMContentLoaded 이벤트(분류에 따른 이벤트 필터 관련) ==========================
@@ -69,8 +138,27 @@ function initializeCalendar() {
                 className: 'holiday-event'
             }
         ],
+        datesSet: function(info) {
+            // 월이 변경될 때마다 해당 월의 일정 요청
+            const start = info.start;
+            const end = info.end;
+            
+            // 로그인 상태일 때만 일정 요청
+            if (isUserLoggedIn()) { // 이 함수는 userState.js에서 구현 필요
+                socket.emit('scheduleHandlers', {
+                    type: 'readMonth',
+                    startDate: start,
+                    endDate: end
+                });
+            }
+        }
     });
     calendar.render(); // 캘린더 렌더링
+}
+
+// 사용자 로그인 상태 확인 함수 수정
+function isUserLoggedIn() {
+    return window.userState && window.userState.isUserLoggedIn();
 }
 
 // ========================== 캘린더 관련 함수들 ==========================
@@ -233,14 +321,14 @@ function displaySearchResults(events) {
     eventListContent.appendChild(ul);
 }
 
-// ========================== 이벤트 추가 관련 함수 ==========================
+// ========================== 일정 생성 관련 함수 ==========================
 
 // 날짜 클릭 시 처리 함수 (이벤트 추가)
 function handleDateClick(info) {
     openEventModal(info.date);
 }
 
-// 이벤트 추가 모달 열기 함수
+// 일정 생성 모달 열기 함수
 function openEventModal(date) {
     const modal = document.getElementById('eventModal');
     const form = document.getElementById('eventForm');
@@ -254,10 +342,10 @@ function openEventModal(date) {
 
     form.onsubmit = handleEventFormSubmit; // 폼 제출 처리
 
-    setModalCloseHandlers(modal, form); // 모달 닫기 핸들러 설정
+    setModalCloseHandlers(modal, form); // 모달 닫기 핸들러 설���
 }
 
-// 이벤트 폼 초기화 함수
+// 일정 생성 폼 초기화 함수
 function resetEventForm() {
     const form = document.getElementById('eventForm');
     form.reset();
@@ -272,7 +360,7 @@ function initializeModalAttendees() {
     }
 }
 
-// 이벤트 폼 날짜 설정 함수
+// 일정 생성 폼 날짜 설정 함수
 function setEventFormDates(date) {
     const startDate = new Date(date);
     startDate.setDate(startDate.getDate() + 1);
@@ -283,46 +371,51 @@ function setEventFormDates(date) {
     document.getElementById('eventEnd').value = endDate.toISOString().slice(0, 16);
 }
 
-// 이벤트 폼 제출 처리 함수
+// 일정 생성 폼 제출 처리 함수 수정
 function handleEventFormSubmit(e) {
     e.preventDefault();
 
     const eventData = collectEventDataFromForm('event');
 
     calendar.addEvent({
-        title: eventData.title,
-        start: eventData.start,
-        end: eventData.end,
-        location: eventData.location,
-        description: eventData.description,
+        title: eventData.scdTitle,
+        start: eventData.startDate,
+        end: eventData.endDatend,
+        location: eventData.scdLocation,
+        description: eventData.scdContent,
         color: eventData.color,
         display: 'block',
         extendedProps: {
-            calendar: eventData.calendar,
-            reminder: eventData.reminder,
-            attendees: eventData.attendees
+            calendar: eventData.calendarName,
+            reminder: eventData.scdAlarm,
+            attendees: eventData.tag
         }
     });
 
-    socket.emit('createEvent', eventData);
+    alert('서버로 전송할 이벤트 데이터: ' + JSON.stringify(eventData)); // 디버그용
+
+    socket.emit('scheduleHandlers', {
+        type: 'create',
+        data: eventData
+    });
 
     currentEventAttendees.clear();
     closeModal('eventModal');
     resetEventForm();
 }
 
-// 폼에서 이벤트 데이터 수집 함수
+// 일정 생성 폼에서 이벤트 데이터 수집 함수
 function collectEventDataFromForm(prefix) {
     return {
-        title: document.getElementById(`${prefix}Title`).value,
-        start: document.getElementById(`${prefix}Start`).value,
-        end: document.getElementById(`${prefix}End`).value,
-        location: document.getElementById(`${prefix}Location`).value,
-        description: document.getElementById(`${prefix}Description`).value,
-        color: document.getElementById(`${prefix}Color`).value,
-        calendar: document.getElementById(`${prefix}Calendar`).value,
-        reminder: document.getElementById(`${prefix}Reminder`).value,
-        attendees: Array.from(prefix === 'event' ? currentEventAttendees : editEventAttendees)
+        scdTitle: document.getElementById(`${prefix}Title`).value,
+        scdLocation: document.getElementById(`${prefix}Location`).value,
+        startDate: document.getElementById(`${prefix}Start`).value,
+        endDate: document.getElementById(`${prefix}End`).value,
+        tag: Array.from(prefix === 'event' ? currentEventAttendees : editEventAttendees),
+        calendarName: document.getElementById(`${prefix}Calendar`).value,
+        scdContent: document.getElementById(`${prefix}Description`).value,
+        scdAlarm: document.getElementById(`${prefix}Reminder`).value,
+        color: document.getElementById(`${prefix}Color`).value
     };
 }
 
@@ -347,40 +440,40 @@ function setModalCloseHandlers(modal, form) {
     };
 }
 
-// ========================== 이벤트 클릭 관련 함수 ==========================
+// ========================== 일정 클릭 관련 함수 ==========================
 
-// 이벤트 클릭 시 처리 함수 (이벤트 정보 보기 또는 수정)
+// 일정 클릭 시 처리 함수 (일정 정보 보기 또는 수정)
 function handleEventClick(info) {
     info.jsEvent.preventDefault();
     openEventInfoModal(info.event, info.el);
 }
 
-// 이벤트 정보 모달 열기 함수
+// 일정 정보 모달 열기 함수
 function openEventInfoModal(event, eventElement) {
     const infoModal = document.getElementById('eventInfoModal');
 
     if (!infoModal) {
-        console.error('이벤트 정보 모달을 찾을 수 없습니다.');
+        console.error('일정 정보 모달을 찾을 수 없습니다.');
         return;
     }
 
     positionInfoModal(infoModal, eventElement); // 모달 위치 설정
-    populateInfoModal(event); // 모달에 이벤트 정보 채우기
+    populateInfoModal(event); // 모달에 일정 정보 채우기
 
     infoModal.style.display = "block";
     infoModal.style.backgroundColor = 'transparent';
 
-    setInfoModalEventHandlers(infoModal, event); // 모달 이벤트 핸들러 설정
+    setInfoModalEventHandlers(infoModal, event); // 모달 일정 핸들러 설정
 }
 
-// 이벤트 정보 모달 위치 설정 함수
+// 일정 정보 모달 위치 설정 함수
 function positionInfoModal(modal, eventElement) {
     const rect = eventElement.getBoundingClientRect();
     const modalContent = modal.querySelector('.modal-content');
     const windowWidth = window.innerWidth;
     const modalWidth = windowWidth < 480 ? 200 : 300; // 모바일 환경일 때 모달 너비 조정
 
-    // 모달을 잠시 보이도록 설정하여 높이를 측정
+    // 모달��� 잠시 보이도록 설정하여 높이를 측정
     modal.style.display = 'block';
     modal.style.visibility = 'hidden'; // 사용자에게는 보이지 않도록
 
@@ -446,7 +539,7 @@ function positionInfoModal(modal, eventElement) {
     });
 }
 
-// 이벤트 정보 모달에 데이터 채우기 함수
+// 일정 정보 모달에 데이터 채우기 함수
 function populateInfoModal(event) {
     const titleEl = document.getElementById('infoEventTitle');
     const locationEl = document.getElementById('infoEventLocation');
@@ -478,7 +571,7 @@ function populateInfoModal(event) {
     if (descriptionEl) descriptionEl.textContent = event.extendedProps.description || '(없음)';
 }
 
-// 이벤트 정보 모달 이벤트 핸들러 설정 함수
+// 일정 정보 모달 이벤트 핸들러 설정 함수 수정
 function setInfoModalEventHandlers(modal, event) {
     const closeButton = modal.querySelector('.close-button');
     const editButton = modal.querySelector('.btn-edit');
@@ -492,9 +585,12 @@ function setInfoModalEventHandlers(modal, event) {
     };
 
     deleteButton.onclick = () => {
-        if (confirm('이벤트를 삭제하시겠습니까?')) {
+        if (confirm('일정을 삭제하시겠습니까?')) {
+            socket.emit('scheduleHandlers', {
+                type: 'delete',
+                data: { UUID: event.id }
+            });
             event.remove();
-            socket.emit('eventDelete', { eventId: event.id });
             closeModal(modal.id);
         }
     };
@@ -506,9 +602,9 @@ function setInfoModalEventHandlers(modal, event) {
     };
 }
 
-// ========================== 이벤트 수정 관련 함수 ==========================
+// ========================== 일정 수정 관련 함수 ==========================
 
-// 이벤트 수정 모달 열기 함수
+// 일정 수정 모달 열기 함수
 function openEditEventModal(event) {
     const editModal = document.getElementById('editEventModal');
 
@@ -526,13 +622,13 @@ function openEditEventModal(event) {
     setEditModalEventHandlers(editModal, event); // 모달 이벤트 핸들러 설정
 }
 
-// 이벤트 수정 폼 초기화 함수
+// 일정 수정 폼 초기화 함수
 function resetEditEventForm() {
     const form = document.getElementById('editEventForm');
     form.reset();
 }
 
-// 이벤트 수정 폼에 데이터 채우기 함수
+// 일정 수정 폼에 데이터 채우기 함수
 function populateEditEventForm(event) {
     const editEventTitle = document.getElementById('editEventTitle');
     const editEventLocation = document.getElementById('editEventLocation');
@@ -561,7 +657,7 @@ function populateEditEventForm(event) {
     }
 }
 
-// 수정 모달 참석자 초기화 함수
+// 일정 수정 모달 참석자 초기화 함수
 function initializeEditModalAttendees(event) {
     editEventAttendees.clear();
     const attendeesList = document.getElementById('editAttendeesList');
@@ -574,7 +670,7 @@ function initializeEditModalAttendees(event) {
     });
 }
 
-// 이벤트 수정 모달 이벤트 핸들러 설정 함수
+// 일정 수정 모달 이벤트 핸들러 설정 함수 수정
 function setEditModalEventHandlers(modal, event) {
     const form = document.getElementById('editEventForm');
     const closeButton = modal.querySelector('.close-button');
@@ -582,9 +678,22 @@ function setEditModalEventHandlers(modal, event) {
 
     form.onsubmit = (e) => {
         e.preventDefault();
-        const eventData = collectEventDataFromForm('editEvent');
-        updateEvent(event, eventData);
-        socket.emit('updateEvent', eventData);
+        const eventData = {
+            UUID: event.id,
+            updateScdTitle: document.getElementById('editEventTitle').value,
+            updateScdLocation: document.getElementById('editEventLocation').value,
+            updateStartDate: document.getElementById('editEventStart').value,
+            updateEndDate: document.getElementById('editEventEnd').value,
+            updateTag: Array.from(editEventAttendees),
+            updateCalendarName: document.getElementById('editEventCalendar').value,
+            updateScdContent: document.getElementById('editEventDescription').value,
+            updateScdAlarm: document.getElementById('editEventReminder').value,
+        };
+
+        socket.emit('scheduleHandlers', {
+            type: 'update',
+            data: eventData
+        });
         closeModal(modal.id);
     };
 
@@ -598,7 +707,7 @@ function setEditModalEventHandlers(modal, event) {
     };
 }
 
-// 이벤트 업데이트 함수
+// 일정 업데이트 함수
 function updateEvent(event, eventData) {
     event.setProp('title', eventData.title);
     event.setStart(eventData.start);
@@ -751,5 +860,62 @@ function getListItem(index, places) {
     };
     return el; // 검색된 장소 리스트 리턴
 }
+
+// 소켓 응답 이벤트 리스너 수정
+socket.on('createScheduleRes', (response) => {
+    if (response.status === 201) {
+        calendar.addEvent({
+            id: response.data.UUID,
+            title: response.data.scdTitle,
+            start: response.data.startDate,
+            end: response.data.endDate,
+            extendedProps: {
+                location: response.data.scdLocation,
+                description: response.data.scdContent,
+                calendar: response.data.calendarName,
+                reminder: response.data.scdAlarm,
+                attendees: response.data.tag
+            }
+        });
+    } else {
+        alert(response.message);
+    }
+});
+
+socket.on('updateScheduleRes', (response) => {
+    if (response.status === 200) {
+        const event = calendar.getEventById(response.data.UUID);
+        if (event) {
+            event.setProp('title', response.data.scdTitle);
+            event.setStart(response.data.startDate);
+            event.setEnd(response.data.endDate);
+            event.setExtendedProp('location', response.data.scdLocation);
+            event.setExtendedProp('description', response.data.scdContent);
+            event.setExtendedProp('calendar', response.data.calendarName);
+            event.setExtendedProp('reminder', response.data.scdAlarm);
+            event.setExtendedProp('attendees', response.data.tag);
+        }
+    } else {
+        alert(response.message);
+    }
+});
+
+socket.on('deleteScheduleRes', (response) => {
+    if (response.status === 200) {
+        // 이미 UI에서 삭제되었으므로 추가 작업 불필요
+        alert(response.message);
+    } else {
+        alert(response.message);
+    }
+});
+
+socket.on('searchScheduleRes', (response) => {
+    if (response.status === 200) {
+        displaySearchResults(response.data);
+    } else {
+        const eventListContent = document.getElementById('eventListContent');
+        eventListContent.innerHTML = '<p class="no-results">검색 결과가 없습니다.</p>';
+    }
+});
 
 

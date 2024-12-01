@@ -1,5 +1,7 @@
 // 사용자 상태를 관리하는 클래스 정의
+
 class UserState {
+    
     constructor() {
         // 로그인 여부를 나타내는 변수
         this.isLoggedIn = false;
@@ -11,6 +13,7 @@ class UserState {
 
     // 초기화 메서드: 로컬 스토리지에서 사용자 데이터 및 알림 데이터 로드
     init() {
+        this.logout();
         const savedUser = localStorage.getItem('userData');
         if (savedUser) {
             // 저장된 사용자 데이터가 있으면 파싱하여 설정
@@ -36,6 +39,13 @@ class UserState {
         localStorage.setItem('notifications', JSON.stringify(window.notifications));
         // UI 업데이트
         this.updateUI();
+
+        // 로그인 시 캘린더 일정 요청
+        window.socket.emit('scheduleHandlers', {
+            type: 'readMonth',
+            startDate: new Date(new Date().setDate(1)), 
+            endDate: new Date(new Date().setMonth(new Date().getMonth() + 1, 0)) 
+        });
     }
 
     // 로그아웃 메서드: 사용자 데이터 초기화 및 로컬 스토리지에서 제거
@@ -45,9 +55,15 @@ class UserState {
         localStorage.removeItem('userData');
         // 알림 배열 초기화 및 로컬 스토리지에서 제거
         window.notifications = [];
+        this.initializeNotificationCount();
         localStorage.removeItem('notifications');
         // UI 업데이트
         this.updateUI();
+    }
+
+    // 로그인 상태 확인 메서드 추가
+    isUserLoggedIn() {
+        return this.isLoggedIn;
     }
 
     // UI 업데이트 메서드: 로그인 상태에 따라 화면 요소를 조정
@@ -68,15 +84,13 @@ class UserState {
             // 사용자 정보 표시
             document.getElementById('userName').textContent = this.userData.name;
             document.querySelector('.profile-name').textContent = this.userData.name;
-            document.querySelector('.profile-id').textContent = this.userData.id;
+            document.querySelector('.profile-id').textContent = `#${this.userData.id}`;
             document.querySelector('.profile-bio').textContent = this.userData.bio;
 
             // 프로필 이미지가 있으면 설정
             if (this.userData.profileImage) {
                 document.getElementById('profileImage').src = this.userData.profileImage;
             }
-
-           
 
             // 알림 카운트 초기화
             this.initializeNotificationCount();
@@ -163,10 +177,10 @@ class UserState {
                 }
 
                 // 소켓을 통해 서버로 수정 요청
-                socket.emit('updateUserInfo', formData);
+                window.socket.emit('updateUserInfo', formData);
 
                 // 서버 응답 대기
-                socket.once('updateUserInfoRes', (response) => {
+                window.socket.once('updateUserInfoRes', (response) => {
                     if (response.status === 200) {
                         // 수정 성공 시
                         this.userData = {
@@ -197,3 +211,6 @@ class UserState {
         };
     }
 }
+
+// 전역에서 접근 가능하도록 인스턴스 생성
+window.userState = new UserState();

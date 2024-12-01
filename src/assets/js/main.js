@@ -1,3 +1,21 @@
+var socket
+
+const host = {
+  protocal: "https",
+  addr: "ewp.devist.me",
+  path: "/api/socket.io"
+}
+
+// 소켓 연결
+socket = io(host.protocal + "://" + host.addr + "/", {
+  path: host.path,
+  transports: ["websocket"]
+});
+
+window.socket = socket;
+  
+export default socket;
+
 (function () {
   // Responsive Sidebar Navigation - by CodyHouse.co << 여기서 가져와서 수정함
   var searchInput = document.getElementsByClassName('js-cd-search')[0],
@@ -145,24 +163,11 @@ document.addEventListener('DOMContentLoaded', function () {
    * 작성일 : 2024-11-20
    */
 
-  // 호스트 설정
-  const host = {
-    protocal: "https",
-    addr: "ewp.devist.me",
-    path: "/api/socket.io"
-  }
 
-  // 소켓 연결
-  const socket = io(host.protocal + "://" + host.addr + "/", {
-    path: host.path,
-    transports: ["websocket"]
-  });
 
   // 연결 이벤트
   socket.on("connect", () => {
-    console.log("서버와 연결되었습니다.(main.js");
-    // 소켓 연결시 알림 받아오기 부분
-    socket.emit('소켓알림받는함수'); // 여기 부분은 실제 알림 받아오는 명칭으로 변경하면 됩니다.
+    console.log("서버와 연결되었습니다.(main.js)");
   });
 
   // 오류 이벤트
@@ -447,7 +452,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
           isIdAvailable = true;
 
-          socket.emit("checkUserId ", { userId });
+          socket.emit("checkUserId", { userId });
         });
 
         // 닫기 버튼 이벤트 리스너
