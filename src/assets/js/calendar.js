@@ -7,7 +7,6 @@ let editEventAttendees = new Set(); // 이벤트 수정 시 참석자 집합
 
 socket.on('readMonthScheduleRes', (response) => {
     if (response.status === 200) {
-      console.log('일정 조회 성공:', response.data);
       // 기존 일정 제거 
       calendar.removeAllEvents();
 
@@ -794,128 +793,38 @@ document.addEventListener('click', (e) => {
 // ========================== 장소 검색 관련 함수 ==========================
 
 // 지도 검색 버튼 클릭 이벤트 처리
-document.addEventListener('click', (e) => {
+document.addEventListener('click', function (e) {
     if (e.target.matches('#mapSearch, #editMapSearch')) {
-        handleMapSearchButtonClick(e.target.id);
+        const mapSearchModal = document.getElementById('mapSearchModal');
+        mapSearchModal.style.display = "block";
+
+        // 현재 활성화된 모달의 location input 저장
+        window.activeLocationInput = e.target.id === 'mapSearch' ?
+            document.getElementById('eventLocation') :
+            document.getElementById('editEventLocation');
     }
 });
 
-// 지도 검색 버튼 클릭 처리 함수
-function handleMapSearchButtonClick(buttonId) {
-    const mapSearchModal = document.getElementById('mapSearchModal');
-    mapSearchModal.style.display = "block";
-    window.activeLocationInput = buttonId === 'mapSearch' ?
-        document.getElementById('eventLocation') :
-        document.getElementById('editEventLocation');
-}
-
 // 지도 검색 모달 닫기 버튼 클릭 이벤트 처리
-document.addEventListener('click', (e) => {
+document.addEventListener('click', function (e) {
     if (e.target.matches('#mapSearchModal .close-button')) {
-        closeModal('mapSearchModal');
+        const mapSearchModal = document.getElementById('mapSearchModal');
+        mapSearchModal.style.display = "none";
     }
 });
 
 // 검색 버튼 클릭 이벤트 처리
-document.addEventListener('click', (e) => {
+document.addEventListener('click', function (e) {
     if (e.target.id === 'searchButton') {
         searchPlaces();
     }
 });
 
 // 검색어 입력 후 엔터키 처리
-document.addEventListener('keypress', (e) => {
+document.addEventListener('keypress', function (e) {
     if (e.target.id === 'keyword' && e.key === 'Enter') {
         e.preventDefault();
         searchPlaces();
     }
 });
-
-// 장소 검색 결과 리스트 아이템 생성 함수
-function getListItem(index, places) {
-    const el = document.createElement('li');
-    el.className = 'item';
-
-    const itemStr = `
-        <div class="info">
-            <h5>${places.place_name}</h5>
-            ${places.road_address_name ? `
-                <span>${places.road_address_name}</span>
-                <span class="jibun gray">${places.address_name}</span>
-            ` : `
-                <span>${places.address_name}</span>
-            `}
-            <span class="tel">${places.phone}</span>
-        </div>
-    `;
-
-    el.innerHTML = itemStr;
-
-    el.onclick = () => {
-        const address = `${places.place_name}, ${places.road_address_name || places.address_name}`;
-        if (window.activeLocationInput) {
-            window.activeLocationInput.value = address;
-        }
-        closeModal('mapSearchModal');
-    };
-    return el; // 검색된 장소 리스트 리턴
-}
-
-// 소켓 응답 이벤트 리스너 수정
-socket.on('createScheduleRes', (response) => {
-    if (response.status === 201) {
-        calendar.addEvent({
-            id: response.data.UUID,
-            title: response.data.scdTitle,
-            start: response.data.startDate,
-            end: response.data.endDate,
-            extendedProps: {
-                location: response.data.scdLocation,
-                description: response.data.scdContent,
-                calendar: response.data.calendarName,
-                reminder: response.data.scdAlarm,
-                attendees: response.data.tag
-            }
-        });
-    } else {
-        alert(response.message);
-    }
-});
-
-socket.on('updateScheduleRes', (response) => {
-    if (response.status === 200) {
-        const event = calendar.getEventById(response.data.UUID);
-        if (event) {
-            event.setProp('title', response.data.scdTitle);
-            event.setStart(response.data.startDate);
-            event.setEnd(response.data.endDate);
-            event.setExtendedProp('location', response.data.scdLocation);
-            event.setExtendedProp('description', response.data.scdContent);
-            event.setExtendedProp('calendar', response.data.calendarName);
-            event.setExtendedProp('reminder', response.data.scdAlarm);
-            event.setExtendedProp('attendees', response.data.tag);
-        }
-    } else {
-        alert(response.message);
-    }
-});
-
-socket.on('deleteScheduleRes', (response) => {
-    if (response.status === 200) {
-        // 이미 UI에서 삭제되었으므로 추가 작업 불필요
-        alert(response.message);
-    } else {
-        alert(response.message);
-    }
-});
-
-socket.on('searchScheduleRes', (response) => {
-    if (response.status === 200) {
-        displaySearchResults(response.data);
-    } else {
-        const eventListContent = document.getElementById('eventListContent');
-        eventListContent.innerHTML = '<p class="no-results">검색 결과가 없습니다.</p>';
-    }
-});
-
 

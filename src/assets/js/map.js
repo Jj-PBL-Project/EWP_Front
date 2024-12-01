@@ -45,6 +45,36 @@ function displayPlaces(places) {
     menuEl.scrollTop = 0;
 }
 
+// 장소 검색 결과 리스트 아이템 생성 함수
+function getListItem(index, places) {
+    var el = document.createElement('li');
+    var itemStr = '<div class="info">' +
+        '   <h5>' + places.place_name + '</h5>';
+
+    if (places.road_address_name) {
+        itemStr += '    <span>' + places.road_address_name + '</span>' +
+            '   <span class="jibun gray">' + places.address_name + '</span>';
+    } else {
+        itemStr += '    <span>' + places.address_name + '</span>';
+    }
+    itemStr += '  <span class="tel">' + places.phone + '</span>' +
+        '</div>';
+
+    el.innerHTML = itemStr;
+    el.className = 'item';
+
+    // 장소 클릭 이벤트 수정
+    el.onclick = function () {
+        const address = places.place_name + ', ' + (places.road_address_name || places.address_name);
+        if (window.activeLocationInput) {
+            window.activeLocationInput.value = address;
+        }
+        document.getElementById('mapSearchModal').style.display = "none";
+    };
+
+    return el;
+}
+
 function displayPagination(pagination) {
     var paginationEl = document.getElementById('pagination'),
         fragment = document.createDocumentFragment(),
