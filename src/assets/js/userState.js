@@ -36,6 +36,7 @@ class UserState {
         localStorage.setItem('userData', JSON.stringify(userData));
         // 알림 데이터를 window.notifications에 저장하고 로컬 스토리지에도 저장
         window.notifications = this.userData.userAlarm ?? [];
+        console.log(window.notifications);
         localStorage.setItem('notifications', JSON.stringify(window.notifications));
         // UI 업데이트
         this.updateUI();
@@ -43,8 +44,10 @@ class UserState {
         // 로그인 시 캘린더 일정 요청
         window.socket.emit('scheduleHandlers', {
             type: 'readMonth',
-            startDate: new Date(new Date().setDate(1)), 
-            endDate: new Date(new Date().setMonth(new Date().getMonth() + 1, 0)) 
+            data: {
+                startDate: new Date(new Date().setDate(1)), 
+                endDate: new Date(new Date().setMonth(new Date().getMonth() + 1, 0)) 
+            }
         });
     }
 
