@@ -302,6 +302,7 @@ document.addEventListener('DOMContentLoaded', function () {
         endDate: window.pageDate.end
       }
     });
+  })
 
   // 일정 생성시 알림 받아오기
   socket.on('newAlarmRes', (data) => {
@@ -313,7 +314,21 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       // 새 알림을 배열 맨 앞에 추가
-      window.notifications.unshift(newNotification);
+      window.notifications.unshift(data.data);
+
+      new Notification("알림", {
+        body: "새로운 알림이 도착했습니다."
+      })
+
+      if (data.data.alarmType === 'alarm') {
+        socket.emit('scheduleHandlers', {
+          type: 'readMonth',
+          data: {
+            startDate: window.pageDate.start,
+            endDate: window.pageDate.end
+          }
+        });
+      }
       
       // localStorage 업데이트
       localStorage.setItem('notifications', JSON.stringify(window.notifications));
