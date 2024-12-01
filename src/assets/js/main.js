@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function () {
             idCheckMessage.textContent = data.message;
             isIdAvailable = false;
         }
-    } else if(!signupModal){
+    } else if (!signupModal) {
         alert('아이디 중복확인 실패');
     }
   });
@@ -237,61 +237,71 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // 서버로부터 알림 목록 수신
-  socket.on('로그인시알림수신받는함수명', (data) => {
-    if (data.status === 200) {
-      const newNotification = {
-        UUID: data.data.UUID,
-        type: data.data.alarmType,  
-        content: data.data.content,
-        timestamp: data.data.createdAt,
-        isRead: false
-      };
+  // 일정 초대 정보 추가
+  socket.on("alarmInviteRes", ({ data }) => {
+    const { sch, userName } = data;
+    notificationList.innerHTML += `
+    <li class="notification-item invitation-item">
+      <div class="notification-content">
+        <h4>일정 초대</h4>
+        <p class="event-title">${sch.schedule.scdTitle}</p>
+        <p class="event-time">${sch.schedule.startDate}</p>
+        <p class="event-host">주최자: ${userName}</p>
+        <div class="invitation-buttons">
+          <button class="accept-btn" data-id="${sch.schedule.UUID}">수락</button>
+          <button class="decline-btn" data-id="${sch.schedule.UUID}">거절</button>
+        </div>
+      </div>
+      <button class="delete-btn" id="${sch.schedule.UUID}">
+        <img src="assets/img/gal.svg" alt="삭제">
+      </button>
+    </li>`;
+    // 초대 수락/거절 버튼 이벤트 리스너
+    const acceptButtons = document.querySelectorAll('.accept-btn');
+    const declineButtons = document.querySelectorAll('.decline-btn');
 
-      // notifications 배열이 없으면 생성
-      if (!window.notifications) {
-        window.notifications = [];
-      }
+    acceptButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const invitationId = button.dataset.id;
+        console.log(invitationId);
+        socket.emit('alarmHandlers', {
+          type: 'responseInvitation',
+          data: {
+            invitationId: invitationId,
+            response: 'accept'
+          }
+        });
+      });
+    });
 
-      window.notifications.unshift(newNotification);
-    } else {
-      console.error('알림 생성 실패:', data.message);
-    }
-  });
+    declineButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const invitationId = button.dataset.id;
+        socket.emit('alarmHandlers', {
+          type: 'responseInvitation',
+          data: {
+            invitationId: invitationId,
+            response: 'decline'
+          }
+        });
+      });
+    });
+  })
 
-    // 새로운 알림 수신(초대 등등)
-    socket.on('로그인시알림수신받는함수명', (notification) => {
-      if (data.status === 200) {
-        const newNotification = {
-          UUID: data.data.UUID,
-          type: data.data.alarmType,  
-          content: data.data.content,
-          timestamp: data.data.createdAt,
-          isRead: false
-        };
-  
-        // notifications 배열이 없으면 생성
-        if (!window.notifications) {
-          window.notifications = [];
-        }
-  
-        window.notifications.unshift(newNotification);
-      } else {
-        console.error('알림 생성 실패:', data.message);
+  // 일정 초대 승인
+  socket.on('responseInvitationRes', (data) => {
+    console.log('일정 초대 승인:', data);
+    socket.emit('scheduleHandlers', {
+      type: 'readMonth',
+      data: {
+        startDate: window.pageDate.start,
+        endDate: window.pageDate.end
       }
     });
 
   // 일정 생성시 알림 받아오기
   socket.on('newAlarmRes', (data) => {
     if (data.status === 200) {
-      // 새로운 알림을 notifications 배열에 추가
-      const newNotification = {
-        UUID: data.data.UUID,
-        type: data.data.alarmType,  
-        content: data.data.content, 
-        timestamp: data.data.createdAt,
-        isRead: false
-      };
 
       // notifications 배열이 없으면 생성
       if (!window.notifications) {
@@ -303,7 +313,6 @@ document.addEventListener('DOMContentLoaded', function () {
       
       // localStorage 업데이트
       localStorage.setItem('notifications', JSON.stringify(window.notifications));
-      
     } else {
       console.error('알림 생성 실패:', data.message);
     }
