@@ -163,8 +163,6 @@ document.addEventListener('DOMContentLoaded', function () {
    * 작성일 : 2024-11-20
    */
 
-
-
   // 연결 이벤트
   socket.on("connect", () => {
     console.log("서버와 연결되었습니다.(main.js)");
@@ -217,7 +215,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-
   // 로그인 이벤트
   socket.on('loginRes', (data) => {
     if (data.status == 200) {
@@ -239,70 +236,77 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-
   // 서버로부터 알림 목록 수신
-  socket.on('notificationList', (data) => {
+  socket.on('로그인시알림수신받는함수명', (data) => {
     if (data.status === 200) {
-      window.notifications = data.notifications || [
-        "새로운 프로젝트가 할당되었습니다.",
-        "회의 일정이 업데이트되었습니다.",
-        "업무 보고서 제출 기한이 다가옵니다."
-      ]; // 테스트용 알림 데이터 추가
-      // 로컬 스토리지에 저장
-      localStorage.setItem('notifications', JSON.stringify(window.notifications));
-      initializeNotificationCount();
-    }
-  });
+      const newNotification = {
+        UUID: data.data.UUID,
+        type: data.data.alarmType,  
+        content: data.data.content,
+        timestamp: data.data.createdAt,
+        isRead: false
+      };
 
-  // 새로운 알림 수신
-  socket.on('newNotification', (notification) => {
-    window.notifications.unshift(notification); // 새 알림을 배열 앞에 추가
-    // 로컬 스토리지에 저장
-    localStorage.setItem('notifications', JSON.stringify(window.notifications));
-    initializeNotificationCount();
-    // 선택적: 새 알림 토스트 메시지 표시
-    showNotificationToast(notification);
-  });
-
-  // 알림 삭제 응답 처리
-  socket.on('notificationDeleted', (data) => {
-    if (data.status === 200) {
-      // 서버에서 삭제 성공 시 UI 업데이트
-      const index = window.notifications.findIndex(n => n.id === data.notificationId);
-      if (index !== -1) {
-        window.notifications.splice(index, 1);
-        // 로컬 스토리지에 저장
-        localStorage.setItem('notifications', JSON.stringify(window.notifications));
-        initializeNotificationCount();
+      // notifications 배열이 없으면 생성
+      if (!window.notifications) {
+        window.notifications = [];
       }
+
+      window.notifications.unshift(newNotification);
+    } else {
+      console.error('알림 생성 실패:', data.message);
     }
   });
 
-  // 알림 삭제 함수 수정
-  function deleteNotification(index) {
-    // 서버에 삭제 요청
-    socket.emit('deleteNotification', { notificationId });
-    // 낙관적 UI 업데이트
-    window.notifications.splice(index, 1);
-    // 로컬 스토리지에 저장
-    localStorage.setItem('notifications', JSON.stringify(window.notifications));
-    updateNotifications();
-  }
+    // 새로운 알림 수신(초대 등등)
+    socket.on('로그인시알림수신받는함수명', (notification) => {
+      if (data.status === 200) {
+        const newNotification = {
+          UUID: data.data.UUID,
+          type: data.data.alarmType,  
+          content: data.data.content,
+          timestamp: data.data.createdAt,
+          isRead: false
+        };
+  
+        // notifications 배열이 없으면 생성
+        if (!window.notifications) {
+          window.notifications = [];
+        }
+  
+        window.notifications.unshift(newNotification);
+      } else {
+        console.error('알림 생성 실패:', data.message);
+      }
+    });
 
-  /*
-  // 서버에서 보낼 알림의 양식
-  socket.emit('newNotification', {
-    id: "unique-notification-id",
-    message: "30분 후 회의 예정 입니다.", // "남은시간" 후 "이벤트" 예정입니다. 이런식으로 메세지를 보내면 될듯
-    timestamp: "2024-01-01T00:00:00Z",
-    type: "meeting" <- 여기 부분은 알림의 타입이나 타입마다 별도의 이벤트가 없다면 없애도 될듯?
-  });
-  */
+  // 일정 생성시 알림 받아오기
+  socket.on('newAlarmRes', (data) => {
+    if (data.status === 200) {
+      // 새로운 알림을 notifications 배열에 추가
+      const newNotification = {
+        UUID: data.data.UUID,
+        type: data.data.alarmType,  
+        content: data.data.content, 
+        timestamp: data.data.createdAt,
+        isRead: false
+      };
 
-  // 알림 메세지 토스트 부분인데 일단 자리만 만듬
-  function showNotificationToast(notification) {
-    // 토스트 메시지 부분
-  }
+      // notifications 배열이 없으면 생성
+      if (!window.notifications) {
+        window.notifications = [];
+      }
+
+      // 새 알림을 배열 맨 앞에 추가
+      window.notifications.unshift(newNotification);
+      
+      // localStorage 업데이트
+      localStorage.setItem('notifications', JSON.stringify(window.notifications));
+      
+    } else {
+      console.error('알림 생성 실패:', data.message);
+    }
+    });
 
   // 로그인 모달 표시 함수
   function showLoginModal() {
@@ -574,41 +578,91 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.appendChild(notificationModal);
         notificationModal.style.display = 'block';
 
-        // 알림 목록 생성 (예시 데이터)
-        const notificationList = notificationModal.querySelector('#notificationList');
-        const countElement = document.querySelector('.cd-count');
-
         function updateNotifications() {
           const notifications = window.notifications ?? [];
+          const notificationList = document.querySelector('#notificationList');
+          const countElement = document.querySelector('.cd-count');
+        
           if (notifications.length === 0) {
             notificationList.innerHTML = '<div class="notification-empty">알림이 없습니다</div>';
             countElement.style.display = 'none';
           } else {
-            notificationList.innerHTML = notifications.map(notification =>
-              `<li class="notification-item">
-                ${notification.content}
-                <button class="delete-btn" id="${notification.UUID}">
-                  <img src="assets/img/gal.svg" alt="삭제">
-                </button>
-              </li>`
-            ).join('');
+            notificationList.innerHTML = notifications.map(notification => {
+              if (notification.type === 'invitation') {
+                // 초대 알림 템플릿
+                return `
+                  <li class="notification-item invitation-item">
+                    <div class="notification-content">
+                      <h4>일정 초대</h4>
+                      <p class="event-title">${notification.eventTitle}</p>
+                      <p class="event-time">${notification.eventDateTime}</p>
+                      <p class="event-host">주최자: ${notification.hostName}</p>
+                      <div class="invitation-buttons">
+                        <button class="accept-btn" data-id="${notification.UUID}">수락</button>
+                        <button class="decline-btn" data-id="${notification.UUID}">거절</button>
+                      </div>
+                    </div>
+                    <button class="delete-btn" id="${notification.UUID}">
+                      <img src="assets/img/gal.svg" alt="삭제">
+                    </button>
+                  </li>`;
+              } else {
+                // 일반 알림 템플릿
+                return `
+                  <li class="notification-item">
+                    <div class="notification-content">
+                      <p>${notification.content}</p>
+                      <span class="notification-time">${notification.timestamp}</span>
+                    </div>
+                    <button class="delete-btn" id="${notification.UUID}">
+                      <img src="assets/img/gal.svg" alt="삭제">
+                    </button>
+                  </li>`;
+              }
+            }).join('');
+        
             countElement.style.display = 'inline-flex';
             countElement.textContent = notifications.length;
           }
-
-          // 삭제 버튼 이벤트 
-          const deleteButtons = notificationModal.querySelectorAll('.delete-btn');
+        
+          // 삭제 버튼 이벤트 리스너
+          const deleteButtons = document.querySelectorAll('.delete-btn');
           deleteButtons.forEach((button, index) => {
             button.addEventListener('click', () => {
-              // 서버에 삭제 요청 생략
               socket.emit('alarmHandlers', { type: 'deleteAlarm', deleteId: button.id });
-              // 즉시 삭제 처리
               window.notifications.splice(index, 1);
               localStorage.setItem('notifications', JSON.stringify(window.notifications));
               updateNotifications();
             });
           });
+        
+          // 초대 수락/거절 버튼 이벤트 리스너
+          const acceptButtons = document.querySelectorAll('.accept-btn');
+          const declineButtons = document.querySelectorAll('.decline-btn');
+        
+          acceptButtons.forEach(button => {
+            button.addEventListener('click', () => {
+              const invitationId = button.dataset.id;
+              socket.emit('alarmHandlers', { 
+                type: 'responseInvitation', 
+                invitationId: invitationId, 
+                response: 'accept' 
+              });
+            });
+          });
+        
+          declineButtons.forEach(button => {
+            button.addEventListener('click', () => {
+              const invitationId = button.dataset.id;
+              socket.emit('alarmHandlers', { 
+                type: 'responseInvitation', 
+                invitationId: invitationId, 
+                response: 'decline' 
+              });
+            });
+          });
         }
+        
 
         // 초기 알림 목록 표시
         updateNotifications();
@@ -631,5 +685,9 @@ document.addEventListener('DOMContentLoaded', function () {
   if (userState.isLoggedIn) {
     socket.emit('getNotifications');
   }
+
+  
 });
+
+
 
