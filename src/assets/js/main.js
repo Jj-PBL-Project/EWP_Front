@@ -1,4 +1,8 @@
-var socket
+var socket, notificationList;
+
+Notification.requestPermission().then(function (permission) {
+  console.log(permission)
+});
 
 const host = {
   protocal: "https",
