@@ -138,7 +138,7 @@ function initializeCalendar() {
         eventContent: customizeEventContent, // 이벤트 내용 커스터마이징
         eventClassNames: () => ['custom-event'], // 이벤트 클래스 지정
         events: [], // 초기 이벤트는 빈 배열
-        googleCalendarApiKey: 'AIzaSyDW7AWvIQ-PRfNCHF3l8mw0LD2rK17LDLo', // 구글 캘린더 API 키
+        googleCalendarApiKey: $API_KEY, // 구글 캘린더 API 키
         eventSources: [
             {
                 // 한국 공휴일 캘린더
