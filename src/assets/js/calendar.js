@@ -76,7 +76,7 @@ socket.on('deleteScheduleRes', (response) => {
 //  오류 응답 이벤트 리스너
 socket.on('scheduleRes', (response) => {
     if (response.status === 400) {
-        console.log('오류',response.data);
+        console.log('오류', response.data);
     }
 });
 
@@ -148,7 +148,7 @@ function initializeCalendar() {
                 className: 'holiday-event'
             }
         ],
-        datesSet: function(info) {
+        datesSet: function (info) {
             // 월이 변경될 때마다 해당 월의 일정 요청
             const start = info.start;
             const end = info.end;
@@ -489,66 +489,76 @@ function positionInfoModal(modal, eventElement) {
     const windowWidth = window.innerWidth;
     const modalWidth = windowWidth < 480 ? 200 : 300; // 모바일 환경일 때 모달 너비 조정
 
-    // 모달��� 잠시 보이도록 설정하여 높이를 측정
+    // 모달이 잠시 보이도록 설정하여 높이를 측정
     modal.style.display = 'block';
     modal.style.visibility = 'hidden'; // 사용자에게는 보이지 않도록
 
     // 브라우저 렌더링 이후에 실행되도록 함
     requestAnimationFrame(() => {
+
+
         // 좌우 공간 계산
         const spaceLeft = rect.left;
         const spaceRight = windowWidth - rect.right;
-
-        if (spaceRight < modalWidth + 20 && spaceLeft < modalWidth + 20) { // 좌우 공간이 모두 부족한 경우
-            // 모달을 화면 중앙에 표시
+        if (spaceRight < modalWidth + 20 && spaceLeft < modalWidth + 20) { // 양쪽 모두 여유 공간 부족
             modalContent.style.left = '50%';
             modalContent.style.right = 'auto';
-            modalContent.style.transform = 'translateX(-50%)';
-            modalContent.style.setProperty('--arrow-left', '50%');
+            modalContent.style.transform = 'translateX(-50%)'; // 중앙 정렬
+            modalContent.style.setProperty('--arrow-left', 'auto');
             modalContent.style.setProperty('--arrow-right', 'auto');
+
+            // 화살표를 중앙에 맞추거나 제거할 수도 있음
             modalContent.classList.remove('arrow-right');
-        } else if (spaceRight < modalWidth + 20) { // 오른쪽 공간이 부족한 경우
-            // 모달을 클릭한 요소의 왼쪽에 표시
-            modalContent.style.left = (rect.left - modalWidth - 10) + 'px';
+        } else if (spaceRight < modalWidth + 20) { // 오른쪽 공간이 부족한 경우 왼쪽에 표시
+            modalContent.style.left = 'auto';
             modalContent.style.right = 'auto';
-            modalContent.style.transform = 'translateX(0)';
-            modalContent.style.setProperty('--arrow-left', 'calc(100% - 10px)');
-            modalContent.style.setProperty('--arrow-right', 'auto');
+            modalContent.style.transform = 'translateX(calc(-100% - 10px))'; // 모달 너비만큼 왼쪽으로 이동
+            modalContent.style.left = rect.left + 'px';
+            modalContent.style.setProperty('--arrow-left', 'auto');
+            modalContent.style.setProperty('--arrow-right', '-10px');
+
+            // 화살표 방향 변경
             modalContent.classList.add('arrow-right');
-        } else { // 기본적으로 모달을 클릭한 요소의 오른쪽에 표시
-            modalContent.style.left = (rect.right + 10) + 'px';
+        } else { // 기본적으로 오른쪽에 표시
+            modalContent.style.left = rect.right + 'px';
             modalContent.style.right = 'auto';
-            modalContent.style.transform = 'translateX(0)';
+            modalContent.style.transform = 'translateX(10px)';
             modalContent.style.setProperty('--arrow-left', '-10px');
             modalContent.style.setProperty('--arrow-right', 'auto');
+
+            // 화살표 방향 원복
             modalContent.classList.remove('arrow-right');
         }
 
         // 모달 높이 측정
         const windowHeight = window.innerHeight;
-        const modalHeight = modalContent.offsetHeight;
-        const spaceTop = rect.top;
+        const modalHeight = 150; // 모달의 높이
         const spaceBottom = windowHeight - rect.bottom;
-
-        if (spaceBottom < modalHeight + 20 && spaceTop > modalHeight + 20) { // 아래쪽 공간이 부족하고 위쪽에 공간이 있는 경우
-            // 모달을 클릭한 요소의 위쪽에 표시
-            modalContent.style.top = (rect.top - modalHeight - 10) + 'px';
+        if (spaceBottom < modalHeight + 250) { // 여유 공간인데 조정이 좀 필요할듯
+            modalContent.style.top = 'auto';
             modalContent.style.bottom = 'auto';
-            modalContent.style.transform += ' translateY(0)';
+            modalContent.style.transform += ' translateY(calc(-100% - 10px))'; // 모달 높이만큼 위로 이동
+            modalContent.style.top = rect.top + 'px';
             modalContent.style.setProperty('--arrow-top', 'auto');
             modalContent.style.setProperty('--arrow-bottom', '-10px');
+
+            // 화살표 방향 변경
             modalContent.classList.add('arrow-bottom');
-        } else { // 기본적으로 모달을 클릭한 요소의 아래쪽에 표시
-            modalContent.style.top = (rect.bottom + 10) + 'px';
+        } else { // 기본적으로 아래에 표시
+            modalContent.style.top = rect.top + 'px';
             modalContent.style.bottom = 'auto';
-            modalContent.style.transform += ' translateY(0)';
+            modalContent.style.transform += ' translateY(10px)';
             modalContent.style.setProperty('--arrow-top', '-10px');
             modalContent.style.setProperty('--arrow-bottom', 'auto');
+
+            // 화살표 방향 원복
             modalContent.classList.remove('arrow-bottom');
         }
 
         modalContent.style.margin = '0';
         modalContent.style.width = modalWidth + 'px'; // 모달 너비 설정
+
+        modalContent.style.setProperty('--arrow-left', '-10px');
 
         // 모달을 다시 보이도록 설정
         modal.style.visibility = 'visible';
