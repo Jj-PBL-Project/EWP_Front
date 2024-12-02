@@ -626,16 +626,27 @@ document.addEventListener('DOMContentLoaded', function () {
           } else {
             notificationList.innerHTML = '';
             notifications.map(notification => {
+              // createdAt을 사용하여 날짜 표시(undefine 문제 해결)
+              const timestamp = notification.createdAt
+                ? new Date(notification.createdAt).toLocaleString('ko-KR', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })
+                : '날짜 없음';
+
+              // 초대 타입의 알람
               if (notification.alarmType === 'invite') {
                 socket.emit("alarmHandlers", { type: "getAlarmInvite", data: { alarmId: notification.UUID } });
-                // 초대 알림 템플릿
               } else {
-                // 일반 알림 템플릿
+                // 일반 타입의 알람
                 notificationList.innerHTML += `
                   <li class="notification-item">
                     <div class="notification-content">
                       <p>${notification.content}</p>
-                      <span class="notification-time">${notification.timestamp}</span>
+                      <span class="notification-time">${timestamp}</span>
                     </div>
                     <button class="delete-btn" id="${notification.UUID}">
                       <img src="assets/img/gal.svg" alt="삭제">
