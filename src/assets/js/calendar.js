@@ -157,7 +157,7 @@ function initializeCalendar() {
             window.pageDate.end = end;
 
             // 로그인 상태일 때만 일정 요청
-            if (isUserLoggedIn()) { // 이 함수는 userState.js에서 구현 필요
+            if (window.userState.isUserLoggedIn) {
                 socket.emit('scheduleHandlers', {
                     type: 'readMonth',
                     data: {
@@ -170,11 +170,6 @@ function initializeCalendar() {
         }
     });
     calendar.render(); // 캘린더 렌더링
-}
-
-// 사용자 로그인 상태 확인 함수 수정
-function isUserLoggedIn() {
-    return window.userState && window.userState.isUserLoggedIn();
 }
 
 // ========================== 캘린더 관련 함수들 ==========================
