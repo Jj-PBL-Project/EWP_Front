@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // 회원가입 이벤트 처리
   socket.on('signUpRes', (data) => {
-    if (data.status == 200) {
+    if (data.status == 201) {
       // 회원가입이 성공한 경우
       alert('회원가입이 완료되었습니다. 로그인 해주세요.');
       closeAllModals();
