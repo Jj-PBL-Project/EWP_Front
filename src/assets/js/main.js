@@ -1,3 +1,4 @@
+// ========================== 전역 변수 선언 ==========================
 var socket, notificationList;
 
 Notification.requestPermission().then(function (permission) {
@@ -20,123 +21,120 @@ window.socket = socket;
 
 export default socket;
 
+// ========================== 반응형 사이드바 영역 ==========================
 (function () {
-  // Responsive Sidebar Navigation - by CodyHouse.co << 여기서 가져와서 수정함
-  var searchInput = document.getElementsByClassName('js-cd-search')[0],
-    navList = document.getElementsByClassName('js-cd-nav__list')[0];
+  // 반응형 사이드바 내비게이션 - CodyHouse.co에서 가져와 수정한 코드
+  var searchInput = document.getElementsByClassName('js-cd-search')[0], // 검색 입력 필드
+    navList = document.getElementsByClassName('js-cd-nav__list')[0]; // 내비게이션 리스트
   if (searchInput && navList) {
-    var sidebar = document.getElementsByClassName('js-cd-side-nav')[0],
-      mainHeader = document.getElementsByClassName('js-cd-main-header')[0],
-      mobileNavTrigger = document.getElementsByClassName('js-cd-nav-trigger')[0],
-      dropdownItems = document.getElementsByClassName('js-cd-item--has-children');
+    var sidebar = document.getElementsByClassName('js-cd-side-nav')[0], // 사이드바
+      mainHeader = document.getElementsByClassName('js-cd-main-header')[0], // 메인 헤더
+      mobileNavTrigger = document.getElementsByClassName('js-cd-nav-trigger')[0], // 모바일 메뉴 트리거(아이콘)
+      dropdownItems = document.getElementsByClassName('js-cd-item--has-children'); // 하위 메뉴가 있는 아이템
 
-    //on resize, move search and top nav position according to window width
+    // 창 크기 변경 시, 검색창과 상단 내비게이션 위치를 조정
     var resizing = false;
     window.addEventListener('resize', function () {
-      if (resizing) return;
+      if (resizing) return; // 이미 실행 중이면 종료
       resizing = true;
       (!window.requestAnimationFrame) ? setTimeout(moveNavigation, 300) : window.requestAnimationFrame(moveNavigation);
     });
-    window.dispatchEvent(new Event('resize'));//trigger the moveNavigation function
+    window.dispatchEvent(new Event('resize')); // 초기 실행 시 moveNavigation 함수 호출
 
-    //on mobile, open sidebar when clicking on menu icon
+    // 모바일 화면에서 메뉴 아이콘 클릭 시 사이드바 열기
     mobileNavTrigger.addEventListener('click', function (event) {
       event.preventDefault();
-      var toggle = !Util.hasClass(sidebar, 'cd-side-nav--is-visible');
-      if (toggle) expandSidebarItem();
-      Util.toggleClass(sidebar, 'cd-side-nav--is-visible', toggle);
-      Util.toggleClass(mobileNavTrigger, 'cd-nav-trigger--nav-is-visible', toggle);
+      var toggle = !Util.hasClass(sidebar, 'cd-side-nav--is-visible'); // 사이드바 상태 확인
+      if (toggle) expandSidebarItem(); // 사이드바 열기
+      Util.toggleClass(sidebar, 'cd-side-nav--is-visible', toggle); // 사이드바 가시성 토글
+      Util.toggleClass(mobileNavTrigger, 'cd-nav-trigger--nav-is-visible', toggle); // 트리거 상태 토글
     });
 
-    // on mobile -> show subnavigation on click
+    // 모바일 화면에서 서브 내비게이션을 클릭하면 펼치기
     for (var i = 0; i < dropdownItems.length; i++) {
       (function (i) {
         dropdownItems[i].children[0].addEventListener('click', function (event) {
-          if (checkMQ() == 'mobile') {
+          if (checkMQ() == 'mobile') { // 모바일 화면 확인
             event.preventDefault();
             var item = event.target.parentNode;
-            Util.toggleClass(item, 'cd-side__item--expanded', !Util.hasClass(item, 'cd-side__item--expanded'));
+            Util.toggleClass(item, 'cd-side__item--expanded', !Util.hasClass(item, 'cd-side__item--expanded')); // 펼치기/접기 토글
           }
         });
       })(i);
     }
 
-    //on desktop - differentiate between a user trying to hover over a dropdown item vs trying to navigate into a submenu's contents
-    var listItems = sidebar.querySelectorAll('.js-cd-side__list > li');
+    // 데스크톱 화면에서 하위 메뉴 탐색 시 마우스 호버 동작 구분
+    var listItems = sidebar.querySelectorAll('.js-cd-side__list > li'); // 상위 메뉴 아이템 리스트
     new menuAim({
-      menu: sidebar,
+      menu: sidebar, // 메뉴 설정
       activate: function (row) {
-        Util.addClass(row, 'hover');
+        Util.addClass(row, 'hover'); // 호버 활성화
       },
       deactivate: function (row) {
-        Util.removeClass(row, 'hover');
+        Util.removeClass(row, 'hover'); // 호버 비활성화
       },
       exitMenu: function () {
-        hideHoveredItems();
+        hideHoveredItems(); // 호버된 아이템 숨기기
         return true;
       },
-      rows: listItems,
-      submenuSelector: '.js-cd-item--has-children',
+      rows: listItems, // 메뉴 항목 리스트
+      submenuSelector: '.js-cd-item--has-children', // 하위 메뉴 셀렉터
     });
 
-    function moveNavigation() { // move searchInput and navList
-      var mq = checkMQ();
+    // 검색 입력창과 내비게이션 리스트 이동
+    function moveNavigation() {
+      var mq = checkMQ(); // 현재 화면 모드 확인
       if (mq == 'mobile' && !Util.hasClass(navList.parentNode, 'js-cd-side-nav')) {
-        detachElements();
-        sidebar.appendChild(navList);
-        sidebar.insertBefore(searchInput, sidebar.firstElementChild);
+        detachElements(); // 기존 위치에서 제거
+        sidebar.appendChild(navList); // 사이드바에 추가
+        sidebar.insertBefore(searchInput, sidebar.firstElementChild); // 검색창을 첫 번째 위치에 추가
       } else if (mq == 'desktop' && !Util.hasClass(navList.parentNode, 'js-cd-main-header')) {
-        detachElements();
-        mainHeader.appendChild(navList);
-        mainHeader.insertBefore(searchInput, mainHeader.firstElementChild.nextSibling);
+        detachElements(); // 기존 위치에서 제거
+        mainHeader.appendChild(navList); // 메인 헤더에 추가
+        mainHeader.insertBefore(searchInput, mainHeader.firstElementChild.nextSibling); // 검색창을 적절한 위치에 추가
       }
-      checkSelected(mq);
-      resizing = false;
+      checkSelected(mq); // 선택된 항목 확인
+      resizing = false; // 리사이즈 상태 초기화
     };
 
-    function detachElements() { // remove element from DOM
-      searchInput.parentNode.removeChild(searchInput);
-      navList.parentNode.removeChild(navList);
+    // DOM에서 요소 제거
+    function detachElements() {
+      searchInput.parentNode.removeChild(searchInput); // 검색 입력 필드 제거
+      navList.parentNode.removeChild(navList); // 내비게이션 리스트 제거
     };
 
-    function hideHoveredItems() { // exit sidebar -> hide dropdown
-      var hoveredItems = sidebar.getElementsByClassName('hover');
-      for (var i = 0; i < hoveredItems.length; i++) Util.removeClass(hoveredItems[i], 'hover');
+    // 사이드바에서 호버된 아이템 숨기기
+    function hideHoveredItems() {
+      var hoveredItems = sidebar.getElementsByClassName('hover'); // 호버된 아이템 찾기
+      for (var i = 0; i < hoveredItems.length; i++) Util.removeClass(hoveredItems[i], 'hover'); // 호버 클래스 제거
     };
 
-    function checkMQ() { // check if mobile or desktop device
-      return window.getComputedStyle(mainHeader, '::before').getPropertyValue('content').replace(/'|"/g, "");
+    // 모바일/데스크톱 모드 확인
+    function checkMQ() {
+      return window.getComputedStyle(mainHeader, '::before').getPropertyValue('content').replace(/'|"/g, ""); // CSS 의사 클래스 확인
     };
 
-    function expandSidebarItem() { // show dropdown of the selected sidebar item
-      Util.addClass(sidebar.getElementsByClassName('cd-side__item--selected')[0], 'cd-side__item--expanded');
+    // 선택된 사이드바 항목의 드롭다운 표시
+    function expandSidebarItem() {
+      Util.addClass(sidebar.getElementsByClassName('cd-side__item--selected')[0], 'cd-side__item--expanded'); // 선택된 항목 확장
     };
 
+    // 데스크톱 모드에서 모바일에서 확장된 아이템 초기화
     function checkSelected(mq) {
-      // on desktop, remove expanded class from items (js-cd-item--has-children) that were expanded on mobile version
       if (mq == 'desktop') {
-        for (var i = 0; i < dropdownItems.length; i++) Util.removeClass(dropdownItems[i], 'cd-side__item--expanded');
+        for (var i = 0; i < dropdownItems.length; i++) Util.removeClass(dropdownItems[i], 'cd-side__item--expanded'); // 확장된 클래스 제거
       };
     }
   }
 }());
 
+// ========================== 사이드바 버튼 이벤트 ==========================
+
 document.addEventListener('DOMContentLoaded', function () {
   const userState = new UserState();
 
-  // 로그인, 로그아웃 테스트 영역(정식 릴리즈 시 삭제)
-
-  // document.querySelector('.login-btn').addEventListener('click', () => {
-  // 테스트용 사용자 데이터
-  // userState.login({
-  //   name: '홍길동',
-  //   id: '#HONG',
-  //   bio: '안녕하세요.',
-  //   profileImage: 'assets/img/default-profile.png'
-  // });
-  // });
   document.querySelector('.cd-nav__sub-list').addEventListener('click', (e) => {
-    if (e.target.textContent === '계정 관리') { // 수정된 부분
+    if (e.target.textContent === '계정 관리') {
       e.preventDefault();
       userState.editUserData();
     }
@@ -149,9 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
       window.location.reload();
     }
   });
-  // 로그인, 로그아웃 테스트 영역
 
-  // 로그인, 회원가입 모달 표시 함수입니당.
   // 모든 모달 창을 닫는 함수
   function closeAllModals() {
     const modals = document.querySelectorAll('.modal');
@@ -163,10 +159,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   };
 
-  /**
-   * 작성자 : 성민우
-   * 작성일 : 2024-11-20
-   */
+  // ========================== 소켓 이벤트 영역 ==========================
 
   // 연결 이벤트
   socket.on("connect", () => {
@@ -230,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function () {
         id: userTag,
         bio: userBio,
         profileImage: userProfileImgUrl ?? 'assets/img/default-profile.svg',
-        userAlarm: userAlarm // userAlarm 데이터로 변경하면 됩니다.
+        userAlarm: userAlarm
       });
       closeAllModals();
 
@@ -337,6 +330,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  socket.on('deleteAlarmRes', (data) => {
+    if (data.status === 200) {
+      console.log('알림 삭제 완료:', data.message);
+    }
+  });
+
+  // ========================== 로그인 모달 영역 ==========================
+
   // 로그인 모달 표시 함수
   function showLoginModal() {
     fetch('modal.html')
@@ -378,6 +379,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
       });
   }
+
+  // ========================== 회원가입 모달 영역 ==========================
 
   // 회원가입 모달 표시 함수
   function showSignupModal() {
@@ -565,8 +568,11 @@ document.addEventListener('DOMContentLoaded', function () {
   const loginButton = document.querySelector('.login-btn');
   loginButton.addEventListener('click', showLoginModal);
 
-  const selectAllCheckbox = document.getElementById('selectAll');
-  const filterCheckboxes = document.querySelectorAll('.event_filter');
+
+  // ========================== 분류 체크박스 영역 ==========================
+
+  const selectAllCheckbox = document.getElementById('selectAll'); // 모두 선택 체크박스
+  const filterCheckboxes = document.querySelectorAll('.event_filter'); // 개별 필터 체크박스
 
   // 모두 선택 체크박스 변경 시 모든 필터 체크박스 상태 변경
   selectAllCheckbox.addEventListener('change', function () {
@@ -586,6 +592,8 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   });
+
+  // ========================== 알림 모달 영역 ==========================
 
   // 알림 모달 처리
   const notificationTrigger = document.querySelector('.cd-side__item--notifications a');
@@ -644,7 +652,7 @@ document.addEventListener('DOMContentLoaded', function () {
           const deleteButtons = document.querySelectorAll('.delete-btn');
           deleteButtons.forEach((button, index) => {
             button.addEventListener('click', () => {
-              socket.emit('alarmHandlers', { type: 'deleteAlarm', deleteId: button.id });
+              socket.emit('alarmHandlers', { type: 'deleteAlarm', data: { deleteId: button.id } });
               window.notifications.splice(index, 1);
               localStorage.setItem('notifications', JSON.stringify(window.notifications));
               updateNotifications();
@@ -674,8 +682,6 @@ document.addEventListener('DOMContentLoaded', function () {
   if (userState.isLoggedIn) {
     socket.emit('getNotifications');
   }
-
-
 });
 
 
