@@ -157,7 +157,7 @@ function initializeCalendar() {
             window.pageDate.end = end;
 
             // 로그인 상태일 때만 일정 요청
-            if (window.userState.isUserLoggedIn) {
+            if (window.localStorage.getItem('userData')) {
                 socket.emit('scheduleHandlers', {
                     type: 'readMonth',
                     data: {

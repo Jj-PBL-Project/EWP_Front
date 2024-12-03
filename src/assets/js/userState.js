@@ -1,7 +1,7 @@
 // 사용자 상태를 관리하는 클래스 정의
 
 class UserState {
-    
+
     constructor() {
         // 로그인 여부를 나타내는 변수
         this.isLoggedIn = false;
@@ -45,8 +45,8 @@ class UserState {
         window.socket.emit('scheduleHandlers', {
             type: 'readMonth',
             data: {
-                startDate: new Date(new Date().setDate(1)), 
-                endDate: new Date(new Date().setMonth(new Date().getMonth() + 1, 0)) 
+                startDate: new Date(new Date().setDate(1)),
+                endDate: new Date(new Date().setMonth(new Date().getMonth() + 1, 0))
             }
         });
     }
@@ -125,15 +125,15 @@ class UserState {
         const accountModal = document.getElementById("accountModal");
         const closeBtn = accountModal.querySelector(".close-btn");
         const saveBtn = accountModal.querySelector(".save-btn");
-        
+
         // 기존 이벤트 리스너 제거
         accountTrigger.replaceWith(accountTrigger.cloneNode(true));
         const newAccountTrigger = document.querySelector("#editData");
-          
+
         // 모달 열기 (이벤트 한 번만 등록)
         newAccountTrigger.addEventListener("click", () => {
             accountModal.style.display = "block";
-            
+
             // userData에서 데이터 가져와서 폼 채우기
             if (this.userData) {
                 document.getElementById('accountName').value = this.userData.name || '';
@@ -144,14 +144,14 @@ class UserState {
                 }
             }
         });
-          
+
         // 모달 닫기
         const closeModal = () => {
             accountModal.style.display = "none";
         };
 
         closeBtn.onclick = closeModal;
-            
+
         // 이미지 미리보기 처리
         const imageInput = document.getElementById('profileImageInput');
         const previewImage = document.getElementById('previewImage');
@@ -173,7 +173,7 @@ class UserState {
                 const formData = new FormData();
                 formData.append('userName', document.getElementById('accountName').value);
                 formData.append('userBio', document.getElementById('accountIntro').value);
-                
+
                 const imageFile = imageInput.files[0];
                 if (imageFile) {
                     formData.append('profileImage', imageFile);
@@ -205,7 +205,7 @@ class UserState {
                 });
             }
         };
-          
+
         // 모달 외부 클릭 시 닫기
         accountModal.onclick = (event) => {
             if (event.target === accountModal) {
