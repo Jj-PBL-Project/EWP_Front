@@ -167,14 +167,18 @@
 
 /* 사이드바 메뉴 그룹 구분 스타일 */
 .cd-side__item--has-children.filter-section {
-    margin-top: 20px;  /* 위쪽 여백 추가 */
-    border-top: 1px solid rgba(255, 255, 255, 0.2);  /* 구분선 추가 */
-    padding-top: 20px;  /* 구분선과의 간격 */
+    margin-top: 20px;
+    /* 위쪽 여백 추가 */
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    /* 구분선 추가 */
+    padding-top: 20px;
+    /* 구분선과의 간격 */
 }
 
 /* 필터 섹션 스타일 조정 */
-.cd-side__item--has-children.filter-section > a {
-    opacity: 0.8;  /* 살짝 투명하게 하여 구분감 추가 */
+.cd-side__item--has-children.filter-section>a {
+    opacity: 0.8;
+    /* 살짝 투명하게 하여 구분감 추가 */
 }
 
 #eventList {
@@ -205,12 +209,14 @@
     max-height: 400px;
     overflow-y: auto;
 }
+
 .event-title {
     font-size: 1.2rem;
     font-weight: bold;
     color: #333;
     margin-bottom: 5px;
 }
+
 .event-date {
     font-size: small;
     font-weight: bold;
@@ -227,4 +233,25 @@
 .no-results {
     text-align: center;
     font-weight: bold;
+}
+
+/* <a> 태그 스타일 조정 */
+a.uniform-button {
+    font-weight: 500;
+    display: inline-flex;
+    /* 플렉스 박스 사용 */
+    align-items: center;
+    /* 수직 중앙 정렬 */
+    justify-content: center;
+    /* 수평 중앙 정렬 */
+    text-decoration: none;
+    /* 링크 밑줄 제거 */
+}
+
+/* 아이콘 추가 시 정렬 */
+a.uniform-button i {
+    margin-right: 8px;
+    /* 아이콘과 텍스트 간격 */
+    font-size: 1em;
+    /* 아이콘 크기 조정 */
 }

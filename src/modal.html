@@ -1,7 +1,9 @@
 <div id="eventModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2>일정 추가</h2>
+            <div class="event-title-area">
+                <i>일정 추가</i>
+            </div>
             <button type="button" class="close-button">&times;</button>
         </div>
         <div class="modal-body">
@@ -15,7 +17,7 @@
                     <label for="eventLocation">장소</label>
                     <div class="location-input">
                         <input type="text" id="eventLocation" class="input-text" required>
-                        <button type="button" id="mapSearch">장소검색</button>
+                        <button type="button" id="mapSearch" class="uniform-button">검색</button>
                     </div>
                 </div>
 
@@ -34,10 +36,11 @@
                 <div class="form-group">
                     <label for="eventAttendees">참석자</label>
                     <div class="input-container id-container">
-                        <input type="text" id="eventAttendees" class="input-text" placeholder="#사용자ID">
-                        <button type="button" class="id-check-btn">사용자 추가</button>
+                        <input type="text" id="eventAttendees" class="input-text" placeholder="이름#태그">
+                        <button type="button" class="id-check-btn uniform-button">추가</button>
                     </div>
                     <div id="attendeesList" class="attendees-list"></div>
+                    <hr>
                 </div>
 
                 <div class="form-group">
@@ -81,8 +84,8 @@
                 </div>
 
                 <div class="modal-buttons">
-                    <button type="submit" class="btn-submit">저장</button>
-                    <button type="button" class="btn-cancel">취소</button>
+                    <button type="submit" class="btn-submit uniform-button">저장</button>
+                    <button type="button" class="btn-cancel uniform-button">취소</button>
                 </div>
             </form>
         </div>
@@ -93,7 +96,9 @@
 <div id="editEventModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2>일정 수정</h2>
+            <div class="event-title-area">
+                <i>일정 수정</i>
+            </div>
             <button type="button" class="close-button">&times;</button>
         </div>
         <div class="modal-body">
@@ -108,7 +113,7 @@
                     <label for="editEventLocation">장소</label>
                     <div class="location-input">
                         <input type="text" id="editEventLocation" class="input-text required">
-                        <button type="button" id="editMapSearch">장소검색</button>
+                        <button type="button" id="mapSearch" class="uniform-button">검색</button>
                     </div>
                 </div>
 
@@ -128,11 +133,12 @@
                 <div class="form-group">
                     <label for="editEventAttendees">참석자</label>
                     <div class="input-container id-container">
-                        <input type="text" id="editEventAttendees" class="input-text" placeholder="#사용자ID">
-                        <button type="button" class="id-check-btn">사용자 추가</button>
+                        <input type="text" id="editEventAttendees" class="input-text" placeholder="이름#태그">
+                        <button type="button" class="id-check-btn uniform-button">추가</button>
                     </div>
                     <div id="editAttendeesList" class="attendees-list"></div>
                 </div>
+                <hr>
 
                 <div class="form-group">
                     <label for="editEventCalendar">분류</label>
@@ -175,34 +181,62 @@
                 </div>
 
                 <div class="modal-buttons">
-                    <button type="submit" class="btn-submit">수정</button>
-                    <button type="button" class="btn-cancel">취소</button>
+                    <button type="submit" class="btn-submit uniform-button">저장</button>
+                    <button type="button" class="btn-cancel uniform-button">취소</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<!-- 일정 정보 팝업 모달  -->
-<div id="eventInfoModal" class="modal">
-    <div class="modal-content" style="max-width: 300px;">
-        <div class="modal-header" style="display: lnline; justify-content: space-between; align-items: center;">
-            <h4 id="infoEventTitle" class="info-title"></h4>
-            <button type="button" class="close-button" style="margin-left: auto;">&times;</button> <!-- 닫기 버튼 -->
+
+<!-- 새로운 일정 정보 팝업 모달 -->
+<div id="eventInfoModal" class="new-modal">
+    <div class="new-modal-content">
+        <div class="modal-header">
+            <div class="event-title-area">
+                <i class="fas fa-calendar-alt"></i>
+                <h4 id="infoEventTitle" class="new-info-title"></h4>
+            </div>
+            <button type="button" class="close-button">&times;</button>
         </div>
-        <div class="modal-body">
-            <div class="event-info">
-                <div class="info-details">
-                    <p><strong>장소:</strong> <span id="infoEventLocation"></span></p>
-                    <p><strong>일시:</strong> <span id="infoEventDateTime"></span></p>
-                    <p><strong>분류:</strong> <span id="infoEventCalendar"></span></p>
-                    <p><strong>참석자:</strong> <span id="infoEventAttendees"></span></p>
-                    <p><strong>설명:</strong> <span id="infoEventDescription"></span></p>
+        <div class="new-modal-body">
+            <div class="new-event-info">
+                <div class="info-row">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span id="infoEventLocation"></span>
+                </div>
+                <!-- 시작 시간 표시 영역 -->
+                <div class="info-row">
+                    <i class="fas fa-play"></i>
+                    <span id="infoEventStart" class="datetime-span"></span>
+                </div>
+
+                <!-- 종료 시간 표시 영역 -->
+                <div class="info-row">
+                    <i class="fas fa-stop"></i>
+                    <span id="infoEventEnd" class="datetime-span"></span>
+                </div>
+                <div class="info-row">
+                    <i class="fas fa-tag"></i>
+                    <span id="infoEventCalendar"></span>
+                </div>
+                <div class="info-row">
+                    <i class="fas fa-users"></i>
+                    <span id="infoEventAttendees"></span>
+                </div>
+                <div class="info-row description">
+                    <i class="fas fa-align-left"></i>
+                    <span id="infoEventDescription" data-bs-toggle="tooltip" title="전체 설명 내용"></span>
                 </div>
             </div>
             <div class="modal-buttons">
-                <button type="button" class="btn-edit">수정</button>
-                <button type="button" class="btn-delete">삭제</button>
+                <button type="button" class="btn-edit">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button type="button" class="btn-delete">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -386,33 +420,34 @@
 <!-- 계정 관리 모달 -->
 <div id="accountModal" class="modal">
     <div class="modal-content">
-      <h2>계정 관리</h2>
-      <form id="accountForm">
-        <div class="profile-upload-section">
-          <img id="previewImage" src="assets/img/default-profile.svg" alt="프로필 이미지">
-          <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
-          <button type="button" class="upload-btn" onclick="document.getElementById('profileImageInput').click()">⚙️</button>
-        </div>
-        <div class="form-group">
-          <label for="accountName">이름</label>
-          <input type="text" id="accountName" value="홍길동">
-        </div>
-        <div class="form-group">
-          <label for="accountId">아이디</label>
-          <input type="text" id="accountId" value="user123" disabled>
-        </div>
-        <div class="form-group">
-          <label for="accountPassword">비밀번호</label>
-          <input type="password" id="accountPassword" value="password123" disabled>
-        </div>
-        <div class="form-group">
-          <label for="accountIntro">한줄 소개</label>
-          <input type="text" id="accountIntro" value="자기소개를 입력하세요">
-        </div>
-        <div class="modal-buttons">
-          <button type="button" class="close-btn">취소</button>
-          <button type="button" class="save-btn">저장</button>
-        </div>
-      </form>
+        <h2>계정 관리</h2>
+        <form id="accountForm">
+            <div class="profile-upload-section">
+                <img id="previewImage" src="assets/img/default-profile.svg" alt="프로필 이미지">
+                <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+                <button type="button" class="upload-btn"
+                    onclick="document.getElementById('profileImageInput').click()">⚙️</button>
+            </div>
+            <div class="form-group">
+                <label for="accountName">이름</label>
+                <input type="text" id="accountName" value="홍길동">
+            </div>
+            <div class="form-group">
+                <label for="accountId">아이디</label>
+                <input type="text" id="accountId" value="user123" disabled>
+            </div>
+            <div class="form-group">
+                <label for="accountPassword">비밀번호</label>
+                <input type="password" id="accountPassword" value="password123" disabled>
+            </div>
+            <div class="form-group">
+                <label for="accountIntro">한줄 소개</label>
+                <input type="text" id="accountIntro" value="자기소개를 입력하세요">
+            </div>
+            <div class="modal-buttons">
+                <button type="button" class="close-btn">취소</button>
+                <button type="button" class="save-btn">저장</button>
+            </div>
+        </form>
     </div>
-  </div>
+</div>

@@ -9,22 +9,26 @@
 
   <!-- 소켓 스크립트 링크 -->
   <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
   <!--풀캘린더 사용을 위한 링크-->
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"></script>
-  
+
 
   <!-- 카카오맵 사용을 위한 링크 -->
-  <script type="text/javascript"
-    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=" + $KAKAO_MAP + "&libraries=services"></script>
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=" + $KAKAO_MAP
+    + "&libraries=services"></script>
 
   <!-- css링크 -->
   <link rel="stylesheet" href="assets/css/reactive_asset.css"> <!-- 반응형 에셋 css-->
   <link rel="stylesheet" href="assets/css/main.css">
   <link rel="stylesheet" href="assets/css/modal.css">
   <link rel="stylesheet" href="assets/css/map.css">
+  <link rel="stylesheet" href="assets/css/newModal.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 
   <!-- PWA -->
   <link rel="manifest" href="assets\manifest.json" />
@@ -32,6 +36,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="EWP">
   <link rel="apple-touch-icon" href="assets/img/maskable_icon_x192.png">
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
   <title>웹 일정 관리 프로젝트</title>
 </head>
@@ -63,7 +69,7 @@
           <li class="cd-nav__sub-item"><a href="#0">로그아웃</a></li>
         </ul>
       <li class="cd-nav__item" id="loginButton" style="display: block;">
-        <a href="#0" class="login-btn">로그인</a>
+        <a href="#0" class="login-btn uniform-button">로그인</a>
       </li>
     </ul>
     </li>
@@ -136,7 +142,7 @@
 
         </li>
       </ul>
-    </nav>  
+    </nav>
 
     <div class="cd-content-wrapper">
       <div class="calendar-container">
@@ -155,19 +161,20 @@
   <!-- 반응형 사이드바 구성을 위한 js 링크 -->
   <script src="assets/js/util.js"></script>
   <script src="assets/js/menu-aim.js"></script>
-  
+
   <!-- 지도 검색 스크립트 링크 -->
   <script src="assets/js/map.js"></script>
 
   <!-- 메인 캘린더 스크립트 링크 -->
   <script type="module" src="assets/js/main.js"></script>
   <script type="module" src="assets/js/calendar.js"></script>
-  
+
   <!-- 유저 상태 스크립트 링크 -->
   <script src="assets/js/userState.js"></script>
-  
+
   <!-- 모달 컨테이너 -->
   <div id="modalContainer"></div>
+  <div id="newModalContainer" class="new-modal"></div>
 
   <!-- PWA -->
   <script>
@@ -176,6 +183,7 @@
         console.log('Service Worker registered!');
       });
     }
-  </script>  
+  </script>
 </body>
+
 </html>
