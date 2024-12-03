@@ -97,6 +97,10 @@ document.addEventListener('DOMContentLoaded', () => {
         initializeFilters(); // 필터 초기화
         initializeSearch(); // 검색 기능 초기화
     });
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
 });
 
 // ========================== 모달 HTML 로드 함수 ==========================
@@ -157,7 +161,7 @@ function initializeCalendar() {
             window.pageDate.end = end;
 
             // 로그인 상태일 때만 일정 요청
-            if (window.localStorage.getItem('userData')) {
+            if (window.userState.isUserLoggedIn) {
                 socket.emit('scheduleHandlers', {
                     type: 'readMonth',
                     data: {
@@ -353,7 +357,7 @@ function openEventModal(date) {
 
     form.onsubmit = handleEventFormSubmit; // 폼 제출 처리
 
-    setModalCloseHandlers(modal, form); // 모달 닫기 핸들러 설���
+    setModalCloseHandlers(modal, form); // 모달 닫기 핸들러 설정
 }
 
 // 일정 생성 폼 초기화 함수
@@ -480,7 +484,7 @@ function openEventInfoModal(event, eventElement) {
 // 일정 정보 모달 위치 설정 함수
 function positionInfoModal(modal, eventElement) {
     const rect = eventElement.getBoundingClientRect();
-    const modalContent = modal.querySelector('.modal-content');
+    const modalContent = modal.querySelector('.new-modal-content');
     const windowWidth = window.innerWidth;
     const modalWidth = windowWidth < 480 ? 200 : 300; // 모바일 환경일 때 모달 너비 조정
 
@@ -572,9 +576,34 @@ function populateInfoModal(event) {
     if (titleEl) titleEl.textContent = event.title;
     if (locationEl) locationEl.textContent = event.extendedProps.location || '(없음)';
 
-    const startDate = new Date(event.start).toLocaleString('ko-KR');
-    const endDate = event.end ? new Date(event.end).toLocaleString('ko-KR') : '';
-    if (dateTimeEl) dateTimeEl.textContent = endDate ? `${startDate} ~ ${endDate}` : startDate;
+    const startDateEl = document.getElementById('infoEventStart');
+    const endDateEl = document.getElementById('infoEventEnd');
+
+    if (startDateEl) {
+        const startDate = new Date(event.start).toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        startDateEl.textContent = startDate;
+    }
+
+    if (endDateEl) {
+        if (event.end) {
+            const endDate = new Date(event.end).toLocaleString('ko-KR', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            endDateEl.textContent = endDate;
+        } else {
+            endDateEl.textContent = '종료 시간 없음';
+        }
+    }
 
     if (calendarEl) calendarEl.textContent = event.extendedProps.calendar || '기본';
     if (attendeesEl) {
@@ -590,7 +619,27 @@ function populateInfoModal(event) {
         }
     }
     if (descriptionEl) descriptionEl.textContent = event.extendedProps.description || '(없음)';
+
+    if (dateTimeEl) {
+        const startDate = new Date(event.start).toLocaleString('ko-KR');
+        const endDate = event.end ? new Date(event.end).toLocaleString('ko-KR') : '';
+        const dateTimeText = endDate ? `${startDate} ~ ${endDate}` : startDate;
+        dateTimeEl.textContent = dateTimeText;
+        dateTimeEl.setAttribute('title', dateTimeText); // 툴팁 내용 설정
+    }
+
+    if (descriptionEl) {
+        const description = event.extendedProps.description || '(없음)';
+        descriptionEl.textContent = description;
+        descriptionEl.setAttribute('title', description); // 툴팁 내용 설정
+    }
+
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+        new bootstrap.Tooltip(tooltipTriggerEl);
+    });
 }
+
 
 // 일정 정보 모달 이벤트 핸들러 설정 함수 수정
 function setInfoModalEventHandlers(modal, event) {
