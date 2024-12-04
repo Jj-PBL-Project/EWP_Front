@@ -89,6 +89,25 @@ socket.on('searchScheduleRes', (response) => {
     }
 });
 
+/*
+// 초대 수락시 초대한 사람 일정 갱신
+socket.on('inviteRes', (response) => {
+    if (response.status === 200) {
+        console.log(response.message);
+        socket.emit('scheduleHandlers', {
+            type: 'readMonth',
+            data: {
+                startDate: start,
+                endDate: end
+            }
+        });
+    } else {
+        console.error(response.message)
+    }
+});
+*/
+
+
 // ========================== DOMContentLoaded 이벤트(분류에 따른 이벤트 필터 관련) ==========================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -142,7 +161,7 @@ function initializeCalendar() {
         eventContent: customizeEventContent, // 이벤트 내용 커스터마이징
         eventClassNames: () => ['custom-event'], // 이벤트 클래스 지정
         events: [], // 초기 이벤트는 빈 배열
-        googleCalendarApiKey: $API_KEY, // 구글 캘린더 API 키
+        googleCalendarApiKey: '$API_KEY', // 구글 캘린더 API 키
         eventSources: [
             {
                 // 한국 공휴일 캘린더
